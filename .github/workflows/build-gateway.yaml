@@ -26,5 +26,5 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          context: ./services/gateway
+          context: "{{defaultContext}}:services/gateway"
           tags: shumkovdenis/bl-gateway:latest
