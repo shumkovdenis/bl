@@ -1,0 +1,46 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gateway
+  labels:
+    app: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 6000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "gateway"
+        dapr.io/app-port: "6000"
+        dapr.io/enable-api-logging: "true"
+    spec:
+      containers:
+      - name: gateway
+        image: ghcr.io/shumkovdenis/bl-gateway:main
+        env:
+        - name: PORT
+          value: "6000"
+        ports:
+        - containerPort: 6000
+        imagePullPolicy: Always
