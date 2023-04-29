@@ -1,0 +1,12 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/shumkovdenis/bl/gen
+plugins:
+  - plugin: buf.build/protocolbuffers/go
+    opt: paths=source_relative
+    out: gen
+  - plugin: buf.build/bufbuild/connect-go
+    opt: paths=source_relative
+    out: gen

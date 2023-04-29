@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package integration.v1;
+
+message GetBalanceRequest {
+  string player_id = 1;
+}
+
+message GetBalanceResponse {
+  int64 balance = 1;
+}
+
+service IntegrationService {
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);
+}
