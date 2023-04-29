@@ -13,7 +13,8 @@ type config struct {
 
 func main() {
 	cfg := config{}
-	if err := env.Parse(&cfg); err != nil {
+	opts := env.Options{RequiredIfNoDef: true}
+	if err := env.ParseWithOptions(&cfg, opts); err != nil {
 		panic(err)
 	}
 

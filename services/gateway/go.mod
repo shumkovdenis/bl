@@ -1,4 +1,4 @@
-module github.com/shumkovdenis/bl-gateway
+module github.com/shumkovdenis/bl/services/gateway
 
 go 1.20
 
