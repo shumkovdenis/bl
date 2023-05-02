@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
@@ -27,6 +28,8 @@ func (s *Server) GetBalance(
 		Balance: 100500,
 	})
 	res.Header().Set("integration-version", "v1")
+
+	log.Println("GetBalance")
 
 	return res, nil
 }
