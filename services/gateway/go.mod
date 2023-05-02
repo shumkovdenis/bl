@@ -3,9 +3,15 @@ module github.com/shumkovdenis/bl/services/gateway
 go 1.20
 
 require (
+	github.com/bufbuild/connect-go v1.7.0
+	github.com/caarlos0/env/v8 v8.0.0
+	github.com/gofiber/fiber/v2 v2.44.0
+	github.com/shumkovdenis/bl v0.0.0-20230502102304-eb23d0fa7f2d
+	google.golang.org/grpc v1.54.0
+)
+
+require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/caarlos0/env/v8 v8.0.0 // indirect
-	github.com/gofiber/fiber/v2 v2.44.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -20,4 +26,5 @@ require (
 	github.com/valyala/fasthttp v1.46.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
 )
