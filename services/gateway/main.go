@@ -67,6 +67,7 @@ func main() {
 		ctx := metadata.AppendToOutgoingContext(context.Background(), "dapr-app-id", "integration")
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "1"})
+		req.Header().Set("dapr-app-id", "integration")
 
 		res, err := client.GetBalance(ctx, req)
 		if err != nil {
