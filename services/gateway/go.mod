@@ -8,7 +8,6 @@ require (
 	github.com/gofiber/fiber/v2 v2.44.0
 	github.com/shumkovdenis/bl v0.0.0-20230502102304-eb23d0fa7f2d
 	golang.org/x/net v0.8.0
-	google.golang.org/grpc v1.54.0
 )
 
 require (
