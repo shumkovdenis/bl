@@ -2,16 +2,13 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 
 	"github.com/caarlos0/env/v8"
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/net/http2"
 
 	"github.com/bufbuild/connect-go"
 	integration "github.com/shumkovdenis/bl/gen/integration/v1"
@@ -34,20 +31,20 @@ type Config struct {
 	Port int `env:"PORT" envDefault:"6000"`
 }
 
-func newInsecureClient() *http.Client {
-	return &http.Client{
-		Transport: &http2.Transport{
-			AllowHTTP: true,
-			DialTLS: func(network, addr string, _ *tls.Config) (net.Conn, error) {
-				// If you're also using this client for non-h2c traffic, you may want
-				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
-				// in an allowlist.
-				return net.Dial(network, addr)
-			},
-			// Don't forget timeouts!
-		},
-	}
-}
+// func newInsecureClient() *http.Client {
+// 	return &http.Client{
+// 		Transport: &http2.Transport{
+// 			AllowHTTP: true,
+// 			DialTLS: func(network, addr string, _ *tls.Config) (net.Conn, error) {
+// 				// If you're also using this client for non-h2c traffic, you may want
+// 				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
+// 				// in an allowlist.
+// 				return net.Dial(network, addr)
+// 			},
+// 			// Don't forget timeouts!
+// 		},
+// 	}
+// }
 
 func main() {
 	cfg := Config{}
@@ -57,8 +54,8 @@ func main() {
 	}
 
 	client := integrationConnect.NewIntegrationServiceClient(
-		newInsecureClient(),
-		fmt.Sprintf("localhost:%d", cfg.Dapr.GRPCPort),
+		http.DefaultClient,
+		fmt.Sprintf("https://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
 	)
 
