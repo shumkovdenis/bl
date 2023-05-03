@@ -5,8 +5,18 @@ managed:
     default: github.com/shumkovdenis/bl/gen
 plugins:
   - plugin: buf.build/protocolbuffers/go
-    opt: paths=source_relative
     out: gen
+    opt:
+      - paths=source_relative
+  # - plugin: buf.build/grpc/go
+  #   out: gen
+  #   opt:
+  #     - paths=source_relative
   - plugin: buf.build/bufbuild/connect-go
-    opt: paths=source_relative
     out: gen
+    opt:
+      - paths=source_relative
+  # - plugin: buf.build/bufbuild/validate-go
+  #   out: gen
+  #   opt:
+  #     - paths=source_relative
