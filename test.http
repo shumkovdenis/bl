@@ -3,6 +3,18 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
+###
+
 GET / HTTP/1.1
 Host: {{host}}
 Content-Type: {{contentType}}
+
+###
+
+POST /integration.v1.IntegrationService/GetBalance HTTP/1.1
+Host: {{hostname}}:8081
+Content-Type: {{contentType}}
+
+{
+    "player_id": "1"
+}
