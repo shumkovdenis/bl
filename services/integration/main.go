@@ -14,7 +14,15 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	dapr "github.com/dapr/go-sdk/client"
+
+	jsoniter "github.com/json-iterator/go"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
+type BalanceData struct {
+	Balance int64 `json:"balance"`
+}
 
 type WalletConfig struct {
 	BindingName string `env:"BINDING_NAME" envDefault:"wallet"`
@@ -49,8 +57,13 @@ func (s *Server) GetBalance(
 
 	log.Println(string(event.Data))
 
+	data := BalanceData{}
+	if err := json.Unmarshal(event.Data, &data); err != nil {
+		return nil, err
+	}
+
 	res := connect.NewResponse(&integration.GetBalanceResponse{
-		Balance: 100500,
+		Balance: data.Balance,
 	})
 
 	return res, nil
