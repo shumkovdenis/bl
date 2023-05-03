@@ -11,7 +11,7 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 6000
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 apiVersion: apps/v1
