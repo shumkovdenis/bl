@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: dapr
+  namespace: denis
+  labels:
+    app: dapr
+spec:
+  selector:
+    matchLabels:
+      dapr.io/enabled: "true"
+  endpoints:
+    - targetPort: 9090
+      path: /
+  namespaceSelector:
+    matchNames:
+      - denis
