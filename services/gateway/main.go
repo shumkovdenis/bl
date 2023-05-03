@@ -58,7 +58,7 @@ func main() {
 
 	client := integrationConnect.NewIntegrationServiceClient(
 		newInsecureClient(),
-		fmt.Sprintf(":%d", cfg.Dapr.GRPCPort),
+		fmt.Sprintf("localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
 	)
 
