@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration
+  labels:
+    app: integration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integration
+  template:
+    metadata:
+      labels:
+        app: integration
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "integration"
+        dapr.io/app-protocol: "grpc"
+        dapr.io/app-port: "6001"
+    spec:
+      containers:
+      - name: integration
+        image: ghcr.io/shumkovdenis/bl-integration:main
+        env:
+        - name: PORT
+          value: "6001"
+        ports:
+        - containerPort: 6001
+        imagePullPolicy: Always
