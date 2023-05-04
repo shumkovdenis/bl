@@ -63,6 +63,7 @@ func (s *Server) GetBalance(
 		return nil, err
 	}
 
+	log.Println(event.Metadata)
 	log.Println(string(event.Data))
 
 	data := BalanceData{}
