@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package integration.v1;
+
+message RoolbackInfo {
+    string transaction_id = 1;
+}
