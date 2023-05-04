@@ -18,6 +18,7 @@ spec:
         dapr.io/app-id: "integration"
         dapr.io/app-protocol: "grpc"
         dapr.io/app-port: "6001"
+        dapr.io/config: "tracing"
     spec:
       containers:
       - name: integration
