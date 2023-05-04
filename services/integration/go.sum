@@ -30,8 +30,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
 github.com/rogpeppe/go-internal v1.9.0/go.mod h1:WtVeX8xhTBvf0smdhujwtBcq4Qrzq/fJaraNFVN+nFs=
-github.com/shumkovdenis/bl v0.0.0-20230429104538-2454cdde604c h1:CcR4Dp5qljec3tKaIYxdvhbsWKKk3bUVnyNcJyEl/j4=
-github.com/shumkovdenis/bl v0.0.0-20230429104538-2454cdde604c/go.mod h1:DVQbkGiSYM2HZ53b32o+hquRPJW2oxIVlRImNO0DCVU=
+github.com/shumkovdenis/bl v0.0.0-20230504074718-e37f52845d61 h1:f/2c5K8+bP0oUyAhL8ciAlkYe4R1QIhck7IUVwKk19I=
+github.com/shumkovdenis/bl v0.0.0-20230504074718-e37f52845d61/go.mod h1:DVQbkGiSYM2HZ53b32o+hquRPJW2oxIVlRImNO0DCVU=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=

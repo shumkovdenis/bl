@@ -39,6 +39,23 @@ type Server struct {
 	walletBindingName string
 }
 
+func newError(transactionID string) error {
+	err := connect.NewError(
+		connect.CodeInvalidArgument,
+		errors.New("player id is required"),
+	)
+
+	rollbackInfo := &integration.RollbackInfo{
+		TransactionId: transactionID,
+	}
+
+	if detail, detailErr := connect.NewErrorDetail(rollbackInfo); detailErr == nil {
+		err.AddDetail(detail)
+	}
+
+	return err
+}
+
 func (s *Server) GetBalance(
 	ctx context.Context,
 	req *connect.Request[integration.GetBalanceRequest],
@@ -48,7 +65,7 @@ func (s *Server) GetBalance(
 	}
 
 	if req.Msg.PlayerId == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("player_id is required"))
+		return nil, newError("100")
 	}
 
 	in := &dapr.InvokeBindingRequest{
