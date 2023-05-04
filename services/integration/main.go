@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -42,6 +43,13 @@ func (s *Server) GetBalance(
 	ctx context.Context,
 	req *connect.Request[integration.GetBalanceRequest],
 ) (*connect.Response[integration.GetBalanceResponse], error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err // automatically coded correctly
+	}
+
+	if req.Msg.PlayerId == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("player_id is required"))
+	}
 
 	in := &dapr.InvokeBindingRequest{
 		Name:      s.walletBindingName,
