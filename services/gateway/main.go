@@ -48,6 +48,27 @@ func newInsecureClient() *http.Client {
 	}
 }
 
+func extractError(err error) (*integration.RollbackInfo, bool) {
+	var connectErr *connect.Error
+	if !errors.As(err, &connectErr) {
+		return nil, false
+	}
+
+	for _, detail := range connectErr.Details() {
+		msg, valueErr := detail.Value()
+		if valueErr != nil {
+			// Usually, errors here mean that we don't have the schema for this
+			// Protobuf message.
+			continue
+		}
+		if retryInfo, ok := msg.(*integration.RollbackInfo); ok {
+			return retryInfo, true
+		}
+	}
+
+	return nil, false
+}
+
 func main() {
 	cfg := Config{}
 	opts := env.Options{RequiredIfNoDef: true}
@@ -75,6 +96,10 @@ func main() {
 			if connectErr := new(connect.Error); errors.As(err, &connectErr) {
 				log.Println(connectErr.Message())
 				log.Println(connectErr.Details())
+
+				if rollbackInfo, ok := extractError(err); ok {
+					log.Println(rollbackInfo.TransactionId)
+				}
 			}
 			return err
 		}
