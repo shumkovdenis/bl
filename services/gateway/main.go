@@ -64,7 +64,9 @@ func main() {
 	app := fiber.New()
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "1"})
+		playerId := c.Query("player_id")
+
+		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
 
 		res, err := client.GetBalance(context.Background(), req)
