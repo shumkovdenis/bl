@@ -2,8 +2,10 @@ syntax = "proto3";
 
 package integration.v1;
 
+import "validate/validate.proto";
+
 message GetBalanceRequest {
-  string player_id = 1;
+  string player_id = 1 [(validate.rules).string.len = 3];
 }
 
 message GetBalanceResponse {
