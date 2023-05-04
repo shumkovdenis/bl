@@ -64,6 +64,10 @@ func (s *Server) GetBalance(
 		return nil, err // automatically coded correctly
 	}
 
+	if err := req.Msg.Validate(); err != nil {
+		return nil, err // automatically coded correctly
+	}
+
 	if req.Msg.PlayerId == "" {
 		return nil, newError("100")
 	}
@@ -77,7 +81,10 @@ func (s *Server) GetBalance(
 
 	event, err := s.client.InvokeBinding(ctx, in)
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(
+			connect.CodeInvalidArgument,
+			err,
+		)
 	}
 
 	log.Println(event.Metadata)
