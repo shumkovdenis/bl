@@ -15,3 +15,6 @@ kube-apply:
 
 get-pods:
 	kubectl get pods -n $(namespace)
+
+generate-protobuf:
+	buf generate proto

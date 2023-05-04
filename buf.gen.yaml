@@ -3,6 +3,8 @@ managed:
   enabled: true
   go_package_prefix:
     default: github.com/shumkovdenis/bl/gen
+    except:
+      - buf.build/envoyproxy/protoc-gen-validate
 plugins:
   - plugin: buf.build/protocolbuffers/go
     out: gen
@@ -16,7 +18,7 @@ plugins:
     out: gen
     opt:
       - paths=source_relative
-  # - plugin: buf.build/bufbuild/validate-go
-  #   out: gen
-  #   opt:
-  #     - paths=source_relative
+  - plugin: buf.build/bufbuild/validate-go
+    out: gen
+    opt:
+      - paths=source_relative
