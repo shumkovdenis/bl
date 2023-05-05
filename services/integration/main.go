@@ -89,6 +89,7 @@ func (s *Server) GetBalance(
 
 	log.Println(event.Metadata)
 	log.Println(string(event.Data))
+	log.Println(event.Metadata["statusCode"])
 
 	data := BalanceData{}
 	if err := json.Unmarshal(event.Data, &data); err != nil {
