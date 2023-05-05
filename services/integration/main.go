@@ -35,7 +35,6 @@ type Config struct {
 }
 
 type Server struct {
-	client            dapr.Client
 	walletBindingName string
 }
 
@@ -72,6 +71,12 @@ func (s *Server) GetBalance(
 		return nil, newError("100")
 	}
 
+	client, err := dapr.NewClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
 	in := &dapr.InvokeBindingRequest{
 		Name:      s.walletBindingName,
 		Operation: "post",
@@ -79,7 +84,7 @@ func (s *Server) GetBalance(
 		Metadata:  map[string]string{"path": "/6b9663d1-41a3-47f8-8e56-8e5c8678bcde"},
 	}
 
-	event, err := s.client.InvokeBinding(ctx, in)
+	event, err := client.InvokeBinding(ctx, in)
 	if err != nil {
 		log.Println(err)
 		return nil, connect.NewError(
@@ -111,14 +116,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	client, err := dapr.NewClient()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Close()
-
 	server := &Server{
-		client:            client,
 		walletBindingName: cfg.Wallet.BindingName,
 	}
 
