@@ -81,6 +81,7 @@ func (s *Server) GetBalance(
 
 	event, err := s.client.InvokeBinding(ctx, in)
 	if err != nil {
+		log.Println(err)
 		return nil, connect.NewError(
 			connect.CodeInvalidArgument,
 			err,
