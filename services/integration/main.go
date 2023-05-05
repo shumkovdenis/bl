@@ -75,7 +75,6 @@ func (s *Server) GetBalance(
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer client.Close()
 
 	in := &dapr.InvokeBindingRequest{
 		Name:      s.walletBindingName,
