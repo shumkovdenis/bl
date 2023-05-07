@@ -1,15 +1,15 @@
-name: build session
+name: build balance
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "services/session/**"
+      - "services/balance/**"
   workflow_dispatch:
 
 env:
-  SERVICE_NAME: session
+  SERVICE_NAME: balance
 
 jobs:
   docker:

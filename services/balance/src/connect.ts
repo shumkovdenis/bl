@@ -4,6 +4,6 @@ import { IntegrationService } from "@shumkovdenis/protobuf-schema/lib/integratio
 export default (router: ConnectRouter) =>
   router.service(IntegrationService, {
     async getBalance() {
-        return { balance: BigInt(100) };
+        return { balance: BigInt(1010) };
     }
   });
