@@ -91,6 +91,8 @@ func (s *Server) GetBalance(
 		return nil, newError("123")
 	}
 
+	log.Println(req.Header())
+
 	client, err := dapr.NewClient()
 	if err != nil {
 		log.Fatal(err)
@@ -122,7 +124,7 @@ func (s *Server) GetBalance(
 	}
 
 	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
-	req.Header().Set("dapr-app-id", "balance")
+	r.Header().Set("dapr-app-id", "balance")
 
 	t, err := s.client.GetBalance(ctx, r)
 	if err != nil {
