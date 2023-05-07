@@ -7,12 +7,11 @@ require (
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/dapr/go-sdk v1.7.0
 	github.com/json-iterator/go v1.1.12
-	github.com/shumkovdenis/bl v0.0.0-20230504161413-95a9c4d8d6d0
+	github.com/shumkovdenis/protobuf-schema v1.3.0
 	golang.org/x/net v0.9.0
 )
 
 require (
-	github.com/envoyproxy/protoc-gen-validate v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect

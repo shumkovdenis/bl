@@ -9,8 +9,8 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/caarlos0/env/v8"
-	integration "github.com/shumkovdenis/bl/gen/integration/v1"
-	integrationConnect "github.com/shumkovdenis/bl/gen/integration/v1/integrationv1connect"
+	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
+	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
@@ -63,12 +63,8 @@ func (s *Server) GetBalance(
 		return nil, err // automatically coded correctly
 	}
 
-	if err := req.Msg.Validate(); err != nil {
-		return nil, err // automatically coded correctly
-	}
-
 	if req.Msg.PlayerId == "" {
-		return nil, newError("100")
+		return nil, newError("123")
 	}
 
 	client, err := dapr.NewClient()

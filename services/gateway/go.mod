@@ -6,7 +6,7 @@ require (
 	github.com/bufbuild/connect-go v1.7.0
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/gofiber/fiber/v2 v2.44.0
-	github.com/shumkovdenis/bl v0.0.0-20230504074718-e37f52845d61
+	github.com/shumkovdenis/protobuf-schema v1.3.0
 	golang.org/x/net v0.8.0
 )
 

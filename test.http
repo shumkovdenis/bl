@@ -5,8 +5,8 @@
 
 ###
 
-GET /?player_ids=1 HTTP/1.1
-Host: {{host}}
+GET https://denis.dev.releaseband.com/?player_id=200 HTTP/1.1
+# Host: {{host}}
 Content-Type: {{contentType}}
 
 ###
@@ -16,5 +16,5 @@ Host: {{hostname}}:8081
 Content-Type: {{contentType}}
 
 {
-    "player_id": "1"
+    "player_id": "123"
 }

@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package integration.v1;
-
-message RollbackInfo {
-    string transaction_id = 1;
-}

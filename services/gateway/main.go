@@ -14,8 +14,8 @@ import (
 	"golang.org/x/net/http2"
 
 	"github.com/bufbuild/connect-go"
-	integration "github.com/shumkovdenis/bl/gen/integration/v1"
-	integrationConnect "github.com/shumkovdenis/bl/gen/integration/v1/integrationv1connect"
+	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
+	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
 )
 
 type DaprConfig struct {
