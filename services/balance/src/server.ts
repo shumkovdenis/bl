@@ -3,9 +3,7 @@ import { fastifyConnectPlugin } from "@bufbuild/connect-fastify";
 import routes from "./connect";
 import { parseEnv, port } from "znv";
 
-async function main() {
-  console.log(process.env);
-  
+async function main() {  
   const { PORT } = parseEnv(process.env, {
     PORT: port().default(6000),
   });

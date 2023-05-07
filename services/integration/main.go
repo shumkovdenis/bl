@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
@@ -25,17 +27,39 @@ type BalanceData struct {
 	Balance int64 `json:"balance"`
 }
 
+type DaprConfig struct {
+	HHTPPort int `env:"HTTP_PORT" envDefault:"3500"`
+	GRPCPort int `env:"GRPC_PORT" envDefault:"50001"`
+}
+
 type WalletConfig struct {
 	BindingName string `env:"BINDING_NAME" envDefault:"wallet"`
 }
 
 type Config struct {
+	Dapr   DaprConfig   `envPrefix:"DAPR_"`
 	Wallet WalletConfig `envPrefix:"WALLET_"`
 	Port   int          `env:"PORT" envDefault:"6000"`
 }
 
 type Server struct {
 	walletBindingName string
+	client            integrationConnect.IntegrationServiceClient
+}
+
+func newInsecureClient() *http.Client {
+	return &http.Client{
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				// If you're also using this client for non-h2c traffic, you may want
+				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
+				// in an allowlist.
+				return net.Dial(network, addr)
+			},
+			// Don't forget timeouts!
+		},
+	}
 }
 
 func newError(transactionID string) error {
@@ -97,8 +121,21 @@ func (s *Server) GetBalance(
 		return nil, err
 	}
 
+	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
+	req.Header().Set("dapr-app-id", "balance")
+
+	t, err := s.client.GetBalance(ctx, r)
+	if err != nil {
+		log.Println(connect.CodeOf(err))
+		if connectErr := new(connect.Error); errors.As(err, &connectErr) {
+			log.Println(connectErr.Message())
+			log.Println(connectErr.Details())
+		}
+		return nil, err
+	}
+
 	res := connect.NewResponse(&integration.GetBalanceResponse{
-		Balance: data.Balance,
+		Balance: data.Balance + t.Msg.Balance,
 	})
 
 	return res, nil
@@ -111,8 +148,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	client := integrationConnect.NewIntegrationServiceClient(
+		newInsecureClient(),
+		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
+		connect.WithGRPC(),
+	)
+
 	server := &Server{
 		walletBindingName: cfg.Wallet.BindingName,
+		client:            client,
 	}
 
 	mux := http.NewServeMux()
