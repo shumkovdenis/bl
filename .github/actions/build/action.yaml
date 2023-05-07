@@ -50,4 +50,4 @@ runs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         build-args: |
-          GITHUB_TOKEN=${{ inputs.github_token }
+          GITHUB_TOKEN=${{ inputs.github_token }}
