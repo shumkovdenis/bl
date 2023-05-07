@@ -1,0 +1,33 @@
+name: build session
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "services/session/**"
+  workflow_dispatch:
+
+env:
+  SERVICE_NAME: session
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Docker build
+        uses: ./.github/actions/build
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          image_name: ${{ github.repository }}-${{ env.SERVICE_NAME }}
+          context: ./services/${{ env.SERVICE_NAME }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
