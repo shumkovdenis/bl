@@ -1,12 +1,13 @@
 import { fastify } from "fastify";
 import { fastifyConnectPlugin } from "@bufbuild/connect-fastify";
 import routes from "./connect";
-import { parseEnv } from "znv";
-import { z } from "zod";
+import { parseEnv, port } from "znv";
 
 async function main() {
+  console.log(process.env);
+  
   const { PORT } = parseEnv(process.env, {
-    PORT: z.number().int().positive().default(6000),
+    PORT: port().default(6000),
   });
 
   const server = fastify();

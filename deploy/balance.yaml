@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance
+  labels:
+    app: balance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: balance
+  template:
+    metadata:
+      labels:
+        app: balance
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "balance"
+        dapr.io/app-protocol: "grpc"
+        dapr.io/app-port: "6002"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+      - name: balance
+        image: ghcr.io/shumkovdenis/bl-balance:main
+        env:
+        - name: PORT
+          value: "6002"
+        ports:
+        - containerPort: 6002
+        imagePullPolicy: Always
