@@ -132,7 +132,7 @@ func (s *Server) GetBalance(
 	// }
 
 	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
-	r.Header().Set("dapr-app-id", "balance")
+	r.Header().Set("dapr-app-id", "remote")
 	r.Header().Set("traceparent", req.Header().Get("tracestate"))
 	// r.Header().Set("traceparent", span.String())
 	// r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))

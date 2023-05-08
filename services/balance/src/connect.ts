@@ -4,6 +4,7 @@ import { IntegrationService } from "@shumkovdenis/protobuf-schema/lib/integratio
 export default (router: ConnectRouter) =>
   router.service(IntegrationService, {
     async getBalance(req, ctx) {
+      console.log(ctx);
       console.log("req:traceparent", ctx.requestHeader.get("traceparent"));
       console.log("req:grpc-trace-bin", ctx.requestHeader.get("grpc-trace-bin"));
       console.log("res:traceparent", ctx.responseHeader.get("traceparent"));
