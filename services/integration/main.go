@@ -91,7 +91,8 @@ func (s *Server) GetBalance(
 		return nil, newError("123")
 	}
 
-	log.Println(req.Header())
+	log.Println("traceparent", req.Header().Get("traceparent"))
+	log.Println("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
 	client, err := dapr.NewClient()
 	if err != nil {
