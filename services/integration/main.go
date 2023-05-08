@@ -179,7 +179,7 @@ func main() {
 	mux.Handle(
 		integrationConnect.NewIntegrationServiceHandler(
 			server,
-			connect.WithInterceptors(otelconnect.NewInterceptor()),
+			connect.WithInterceptors(otelconnect.NewInterceptor(otelconnect.WithTrustRemote())),
 		),
 	)
 
