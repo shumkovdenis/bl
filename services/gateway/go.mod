@@ -8,6 +8,7 @@ require (
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/gofiber/fiber/v2 v2.44.0
 	github.com/shumkovdenis/protobuf-schema v1.3.0
+	github.com/smallstep/logging v0.3.0
 	golang.org/x/net v0.8.0
 )
 

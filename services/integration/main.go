@@ -10,10 +10,10 @@ import (
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
-	otelconnect "github.com/bufbuild/connect-opentelemetry-go"
 	"github.com/caarlos0/env/v8"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
+	"github.com/smallstep/logging/tracing"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
@@ -126,9 +126,19 @@ func (s *Server) GetBalance(
 		return nil, err
 	}
 
+	traceparent, err := tracing.Parse(req.Header().Get("traceparent"))
+	if err != nil {
+		return nil, err
+	}
+
+	span, err := traceparent.NewSpan()
+	if err != nil {
+		return nil, err
+	}
+
 	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
 	r.Header().Set("dapr-app-id", "balance")
-	r.Header().Set("traceparent", req.Header().Get("traceparent"))
+	r.Header().Set("traceparent", span.String())
 	// r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
 	log.Println("balance-req:traceparent", r.Header().Get("traceparent"))
@@ -168,7 +178,7 @@ func main() {
 		newInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
-		connect.WithInterceptors(otelconnect.NewInterceptor()),
+		// connect.WithInterceptors(otelconnect.NewInterceptor()),
 	)
 
 	server := &Server{
@@ -180,7 +190,7 @@ func main() {
 	mux.Handle(
 		integrationConnect.NewIntegrationServiceHandler(
 			server,
-			connect.WithInterceptors(otelconnect.NewInterceptor(otelconnect.WithTrustRemote())),
+			// connect.WithInterceptors(otelconnect.NewInterceptor(otelconnect.WithTrustRemote())),
 		),
 	)
 

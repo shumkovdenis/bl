@@ -6,6 +6,7 @@
 ###
 
 GET https://denis.dev.releaseband.com/?player_id=200 HTTP/1.1
+# GET /?player_id=200 HTTP/1.1
 # Host: {{host}}
 Content-Type: {{contentType}}
 
