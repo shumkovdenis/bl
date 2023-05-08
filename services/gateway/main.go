@@ -14,6 +14,7 @@ import (
 	"golang.org/x/net/http2"
 
 	"github.com/bufbuild/connect-go"
+	otelconnect "github.com/bufbuild/connect-opentelemetry-go"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
 )
@@ -80,6 +81,7 @@ func main() {
 		newInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
+		connect.WithInterceptors(otelconnect.NewInterceptor()),
 	)
 
 	app := fiber.New()
@@ -92,7 +94,7 @@ func main() {
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
-		req.Header().Set("traceparent", c.Get("traceparent"))
+		// req.Header().Set("traceparent", c.Get("traceparent"))
 		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		res, err := client.GetBalance(context.Background(), req)
