@@ -173,8 +173,8 @@ func main() {
 
 	client := integrationConnect.NewIntegrationServiceClient(
 		newInsecureClient(),
-		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
-		connect.WithGRPC(),
+		fmt.Sprintf("http://localhost:%d", cfg.Dapr.HHTPPort),
+		// connect.WithGRPC(),
 		// connect.WithInterceptors(otelconnect.NewInterceptor()),
 	)
 

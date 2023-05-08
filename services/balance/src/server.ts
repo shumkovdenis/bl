@@ -8,7 +8,7 @@ async function main() {
     PORT: port().default(6000),
   });
 
-  const server = fastify({http2: true});
+  const server = fastify();
   await server.register(fastifyConnectPlugin, {
     routes,
   });
