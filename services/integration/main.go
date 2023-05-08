@@ -135,7 +135,7 @@ func (s *Server) GetBalance(
 	r.Header().Set("dapr-app-id", "remote")
 	r.Header().Set("traceparent", req.Header().Get("tracestate"))
 	// r.Header().Set("traceparent", span.String())
-	// r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
+	r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
 	log.Println("balance-req:traceparent", r.Header().Get("traceparent"))
 	log.Println("balance-req:grpc-trace-bin", r.Header().Get("grpc-trace-bin"))

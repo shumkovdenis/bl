@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remote
+  labels:
+    app: remote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remote
+  template:
+    metadata:
+      labels:
+        app: remote
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "remote"
+        dapr.io/app-protocol: "grpc"
+        dapr.io/app-port: "6003"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+      - name: remote
+        image: ghcr.io/shumkovdenis/bl-remote:main
+        env:
+        - name: PORT
+          value: "6003"
+        ports:
+        - containerPort: 6003
+        imagePullPolicy: Always
