@@ -89,6 +89,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		playerId := c.Query("player_id")
 
+		log.Println("headers", c.GetReqHeaders())
 		log.Println("req:traceparent", c.Get("traceparent"))
 		log.Println("req:grpc-trace-bin", c.Get("grpc-trace-bin"))
 
@@ -97,7 +98,7 @@ func main() {
 		// req.Header().Set("traceparent", c.Get("traceparent"))
 		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
-		res, err := client.GetBalance(context.Background(), req)
+		res, err := client.GetBalance(c.UserContext(), req)
 		if err != nil {
 			log.Println(connect.CodeOf(err))
 			if connectErr := new(connect.Error); errors.As(err, &connectErr) {
