@@ -93,7 +93,7 @@ func main() {
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
 		req.Header().Set("traceparent", c.Get("traceparent"))
-		req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
+		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		res, err := client.GetBalance(context.Background(), req)
 		if err != nil {
