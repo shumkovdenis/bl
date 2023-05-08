@@ -89,13 +89,13 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		playerId := c.Query("player_id")
 
-		log.Println("headers", c.GetReqHeaders())
+		// log.Println("headers", c.GetReqHeaders())
 		log.Println("req:traceparent", c.Get("traceparent"))
 		log.Println("req:grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
-		// req.Header().Set("traceparent", c.Get("traceparent"))
+		req.Header().Set("traceparent", c.Get("traceparent"))
 		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		res, err := client.GetBalance(c.UserContext(), req)
