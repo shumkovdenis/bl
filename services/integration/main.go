@@ -126,6 +126,7 @@ func (s *Server) GetBalance(
 
 	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
 	r.Header().Set("dapr-app-id", "balance")
+	r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
 	t, err := s.client.GetBalance(ctx, r)
 	if err != nil {
