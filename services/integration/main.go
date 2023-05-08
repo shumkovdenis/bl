@@ -160,6 +160,7 @@ func (s *Server) GetBalance(
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: data.Balance + t.Msg.Balance,
 	})
+	res.Header().Set("traceparent", span.String())
 
 	log.Println("res:traceparent", res.Header().Get("traceparent"))
 	log.Println("res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))

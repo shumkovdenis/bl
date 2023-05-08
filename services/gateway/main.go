@@ -127,6 +127,8 @@ func main() {
 		log.Println("integration-res:traceparent", res.Header().Get("traceparent"))
 		log.Println("integration-res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
 
+		c.Set("traceparent", span.String())
+
 		log.Println("res:headers", c.GetRespHeaders())
 
 		return c.SendString(fmt.Sprintf("Balance: %d", res.Msg.Balance))
