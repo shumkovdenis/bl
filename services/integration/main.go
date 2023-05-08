@@ -91,8 +91,8 @@ func (s *Server) GetBalance(
 		return nil, newError("123")
 	}
 
-	log.Println("traceparent", req.Header().Get("traceparent"))
-	log.Println("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
+	log.Println("req:traceparent", req.Header().Get("traceparent"))
+	log.Println("req:grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
 	client, err := dapr.NewClient()
 	if err != nil {
@@ -126,7 +126,10 @@ func (s *Server) GetBalance(
 
 	r := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: "123"})
 	r.Header().Set("dapr-app-id", "balance")
-	r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
+	// r.Header().Set("grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
+
+	log.Println("balance-req:traceparent", r.Header().Get("traceparent"))
+	log.Println("balance-req:grpc-trace-bin", r.Header().Get("grpc-trace-bin"))
 
 	t, err := s.client.GetBalance(ctx, r)
 	if err != nil {
@@ -138,9 +141,15 @@ func (s *Server) GetBalance(
 		return nil, err
 	}
 
+	log.Println("balance-res:traceparent", t.Header().Get("traceparent"))
+	log.Println("balance-res:grpc-trace-bin", t.Header().Get("grpc-trace-bin"))
+
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: data.Balance + t.Msg.Balance,
 	})
+
+	log.Println("res:traceparent", res.Header().Get("traceparent"))
+	log.Println("res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
 
 	return res, nil
 }
