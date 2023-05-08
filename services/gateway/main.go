@@ -95,7 +95,7 @@ func main() {
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
-		req.Header().Set("traceparent", c.Get("traceparent"))
+		// req.Header().Set("traceparent", c.Get("traceparent"))
 		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		res, err := client.GetBalance(c.UserContext(), req)
@@ -114,6 +114,8 @@ func main() {
 
 		log.Println("integration-res:traceparent", res.Header().Get("traceparent"))
 		log.Println("integration-res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
+
+		log.Println("res:headers", c.GetRespHeaders())
 
 		return c.SendString(fmt.Sprintf("Balance: %d", res.Msg.Balance))
 	})
