@@ -92,6 +92,7 @@ func main() {
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
+		req.Header().Set("traceparent", c.Get("traceparent"))
 
 		res, err := client.GetBalance(context.Background(), req)
 		if err != nil {
