@@ -16,7 +16,7 @@ spec:
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "balance"
-        # dapr.io/app-protocol: "grpc"
+        dapr.io/app-protocol: "grpc"
         dapr.io/app-port: "6002"
         dapr.io/config: "tracing"
     spec:
