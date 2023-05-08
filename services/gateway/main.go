@@ -13,8 +13,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/net/http2"
 
-	"github.com/smallstep/logging/tracing"
-
 	"github.com/bufbuild/connect-go"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
@@ -95,19 +93,20 @@ func main() {
 		log.Println("req:tracestate", c.Get("tracestate"))
 		log.Println("req:grpc-trace-bin", c.Get("grpc-trace-bin"))
 
-		traceparent, err := tracing.Parse(c.Get("traceparent"))
-		if err != nil {
-			return err
-		}
+		// traceparent, err := tracing.Parse(c.Get("traceparent"))
+		// if err != nil {
+		// 	return err
+		// }
 
-		span, err := traceparent.NewSpan()
-		if err != nil {
-			return err
-		}
+		// span, err := traceparent.NewSpan()
+		// if err != nil {
+		// 	return err
+		// }
 
 		req := connect.NewRequest(&integration.GetBalanceRequest{PlayerId: playerId})
 		req.Header().Set("dapr-app-id", cfg.Integration.AppID)
-		req.Header().Set("traceparent", span.String())
+		req.Header().Set("traceparent", c.Get("traceparent"))
+		// req.Header().Set("traceparent", span.String())
 		// req.Header().Set("grpc-trace-bin", c.Get("grpc-trace-bin"))
 
 		res, err := client.GetBalance(c.UserContext(), req)
@@ -127,7 +126,7 @@ func main() {
 		log.Println("integration-res:traceparent", res.Header().Get("traceparent"))
 		log.Println("integration-res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
 
-		c.Set("traceparent", span.String())
+		// c.Set("traceparent", span.String())
 
 		log.Println("res:headers", c.GetRespHeaders())
 
