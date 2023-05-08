@@ -15,13 +15,9 @@ import (
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
-
-	dapr "github.com/dapr/go-sdk/client"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
+// var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type BalanceData struct {
 	Balance int64 `json:"balance"`
@@ -95,35 +91,35 @@ func (s *Server) GetBalance(
 	log.Println("req:tracestate", req.Header().Get("tracestate"))
 	log.Println("req:grpc-trace-bin", req.Header().Get("grpc-trace-bin"))
 
-	client, err := dapr.NewClient()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// client, err := dapr.NewClient()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	in := &dapr.InvokeBindingRequest{
-		Name:      s.walletBindingName,
-		Operation: "post",
-		Data:      []byte(""),
-		Metadata:  map[string]string{"path": "/6b9663d1-41a3-47f8-8e56-8e5c8678bcde"},
-	}
+	// in := &dapr.InvokeBindingRequest{
+	// 	Name:      s.walletBindingName,
+	// 	Operation: "post",
+	// 	Data:      []byte(""),
+	// 	Metadata:  map[string]string{"path": "/6b9663d1-41a3-47f8-8e56-8e5c8678bcde"},
+	// }
 
-	event, err := client.InvokeBinding(ctx, in)
-	if err != nil {
-		log.Println(err)
-		return nil, connect.NewError(
-			connect.CodeInvalidArgument,
-			err,
-		)
-	}
+	// event, err := client.InvokeBinding(ctx, in)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return nil, connect.NewError(
+	// 		connect.CodeInvalidArgument,
+	// 		err,
+	// 	)
+	// }
 
-	log.Println(event.Metadata)
-	log.Println(string(event.Data))
-	log.Println(event.Metadata["statusCode"])
+	// log.Println(event.Metadata)
+	// log.Println(string(event.Data))
+	// log.Println(event.Metadata["statusCode"])
 
-	data := BalanceData{}
-	if err := json.Unmarshal(event.Data, &data); err != nil {
-		return nil, err
-	}
+	// data := BalanceData{}
+	// if err := json.Unmarshal(event.Data, &data); err != nil {
+	// 	return nil, err
+	// }
 
 	// traceparent, err := tracing.Parse(req.Header().Get("traceparent"))
 	// if err != nil {
@@ -158,7 +154,7 @@ func (s *Server) GetBalance(
 	log.Println("balance-res:grpc-trace-bin", t.Header().Get("grpc-trace-bin"))
 
 	res := connect.NewResponse(&integration.GetBalanceResponse{
-		Balance: data.Balance + t.Msg.Balance,
+		Balance: t.Msg.Balance,
 	})
 	// res.Header().Set("traceparent", span.String())
 
