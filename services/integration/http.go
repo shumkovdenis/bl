@@ -48,12 +48,13 @@ func Launch(ctx *fiber.Ctx) error {
 	}
 
 	if err := validate.Struct(&in); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err)
-
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": err.Error(),
+		})
 	}
 
 	var out LaunchOutput
-	out.Token = in.PlayerId + in.GameId
+	out.Token = in.PlayerId + "_" + in.GameId
 
 	return ctx.JSON(&out)
 }
