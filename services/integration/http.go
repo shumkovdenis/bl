@@ -33,6 +33,7 @@ func NewHTTPServer(cfg Config) error {
 				return output.WriteString(c.Get("grpc-trace-bin"))
 			},
 		},
+		Format: "[${time}] ${status} - ${latency} ${method} ${path} |${traceparent}|${tracestate}|${grpc-trace-bin}|\n",
 	}))
 	app.Post("/launch", Launch)
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))

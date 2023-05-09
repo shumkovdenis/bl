@@ -32,7 +32,7 @@ func NewHTTPServer(cfg Config) error {
 				return output.WriteString(c.Get("grpc-trace-bin"))
 			},
 		},
-		Format: "[${time}] ${status} - ${latency} ${method} ${path} ${traceparent} ${tracestate} ${grpc-trace-bin}\n",
+		Format: "[${time}] ${status} - ${latency} ${method} ${path} |${traceparent}|${tracestate}|${grpc-trace-bin}|\n",
 	}))
 	app.Post("/init", Init)
 	app.Post("/bet", Init)
