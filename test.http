@@ -1,17 +1,36 @@
+@remote = https://denis.dev.releaseband.com
 @hostname = localhost
-@port = 8080
-@host = {{hostname}}:{{port}}
 @contentType = application/json
 
 ###
 
-GET https://denis.dev.releaseband.com/?player_id=200 HTTP/1.1
-# GET /?player_id=200 HTTP/1.1
-# Host: {{host}}
+# @name launch
+POST /launch HTTP/1.1
+Host: {{hostname}}:8080
 Content-Type: {{contentType}}
+
+{
+    "playerId": "player",
+    "gameId": "game"
+}
 
 ###
 
+@token = {{launch.response.body.token}}
+
+# # @name init
+POST {{remote}}/init HTTP/1.1
+# POST /init HTTP/1.1
+# Host: {{hostname}}:8081
+Content-Type: {{contentType}}
+
+{
+    "token": "{{token}}"
+}
+
+###
+
+# @name balance
 POST /integration.v1.IntegrationService/GetBalance HTTP/1.1
 Host: {{hostname}}:8081
 Content-Type: {{contentType}}

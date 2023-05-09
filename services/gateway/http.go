@@ -72,7 +72,7 @@ func (s *HTTPServer) Init(ctx *fiber.Ctx) error {
 	}
 
 	req := connect.NewRequest(&integration.GetBalanceRequest{})
-	req.Header().Set("dapr-app-id", "integration")
+	req.Header().Set("dapr-app-id", "integration-grpc")
 
 	CopyTraceHeaders(ctx, req.Header())
 
