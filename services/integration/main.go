@@ -118,6 +118,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("server started on port %d in %s mode", cfg.Port, cfg.Mode)
+
 	if cfg.Mode == "grpc" {
 		if err := NewGRPCServer(cfg); err != nil {
 			log.Fatal(err)
@@ -127,6 +129,4 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-
-	log.Printf("server started on port %d in %s mode", cfg.Port, cfg.Mode)
 }

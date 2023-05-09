@@ -37,9 +37,9 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Printf("server started on port %d in", cfg.Port)
+
 	if err := NewHTTPServer(cfg); err != nil {
 		log.Fatal(err)
 	}
-
-	log.Printf("server started on port %d in", cfg.Port)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type InitInput struct {
-	Token string `json:"token"`
+	Token string `json:"token" validate:"required"`
 }
 
 type InitOutput struct {
@@ -32,6 +32,7 @@ func NewHTTPServer(cfg Config) error {
 				return output.WriteString(c.Get("grpc-trace-bin"))
 			},
 		},
+		Format: "[${time}] ${status} - ${latency} ${method} ${path} ${traceparent} ${tracestate} ${grpc-trace-bin}\n",
 	}))
 	app.Post("/init", Init)
 	app.Post("/bet", Init)
@@ -48,9 +49,7 @@ func Init(ctx *fiber.Ctx) error {
 	}
 
 	if err := validate.Struct(&in); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		return ctx.Status(fiber.StatusBadRequest).JSON(ExtractValidateError(err))
 	}
 
 	var out InitOutput
