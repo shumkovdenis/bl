@@ -32,6 +32,7 @@ spec:
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "gateway"
+        dapr.io/app-protocol: "http"
         dapr.io/app-port: "6000"
         dapr.io/enable-api-logging: "true"
         dapr.io/config: "tracing"

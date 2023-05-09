@@ -1,33 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: integration-grpc
+  name: integration-http
   labels:
-    app: integration-grpc
+    app: integration-http
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: integration-grpc
+      app: integration-http
   template:
     metadata:
       labels:
-        app: integration-grpc
+        app: integration-http
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "integration-grpc"
-        dapr.io/app-protocol: "grpc"
-        dapr.io/app-port: "6001"
+        dapr.io/app-id: "integration-http"
+        dapr.io/app-protocol: "http"
+        dapr.io/app-port: "7001"
+        dapr.io/enable-api-logging: "true"
         dapr.io/config: "tracing"
     spec:
       containers:
-      - name: integration-grpc
+      - name: integration-http
         image: ghcr.io/shumkovdenis/bl-integration:main
         env:
         - name: PORT
-          value: "6001"
-        - name: MODE
-          value: "grpc"
+          value: "7001"
         ports:
-        - containerPort: 6001
+        - containerPort: 7001
         imagePullPolicy: Always
