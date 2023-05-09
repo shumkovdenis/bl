@@ -9,9 +9,14 @@ type DaprConfig struct {
 	GRPCPort int `env:"GRPC_PORT" envDefault:"50001"`
 }
 
+type IntegrationConfig struct {
+	AppID string `env:"APP_ID" envDefault:"integration"`
+}
+
 type Config struct {
-	Dapr DaprConfig `envPrefix:"DAPR_"`
-	Port int        `env:"PORT" envDefault:"6000"`
+	Dapr        DaprConfig        `envPrefix:"DAPR_"`
+	Port        int               `env:"PORT" envDefault:"6000"`
+	Integration IntegrationConfig `envPrefix:"INTEGRATION_"`
 }
 
 func ParseConfig() (Config, error) {
