@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration-http
+  labels:
+    app: integration-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integration-http
+  template:
+    metadata:
+      labels:
+        app: integration-http
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "integration-http"
+        dapr.io/app-protocol: "http"
+        dapr.io/app-port: "7001"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+      - name: integration-http
+        image: ghcr.io/shumkovdenis/bl-integration:main
+        env:
+        - name: PORT
+          value: "7001"
+        ports:
+        - containerPort: 7001
+        imagePullPolicy: Always
