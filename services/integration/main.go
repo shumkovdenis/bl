@@ -1,63 +1,10 @@
 package main
 
 import (
-	"context"
-	"crypto/tls"
-	"errors"
-	"fmt"
 	"log"
-	"net"
-	"net/http"
-
-	"github.com/bufbuild/connect-go"
-	"github.com/caarlos0/env/v8"
-	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
-	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
-// var json = jsoniter.ConfigCompatibleWithStandardLibrary
-
-type BalanceData struct {
-	Balance int64 `json:"balance"`
-}
-
-type DaprConfig struct {
-	HHTPPort int `env:"HTTP_PORT" envDefault:"3500"`
-	GRPCPort int `env:"GRPC_PORT" envDefault:"50001"`
-}
-
-type WalletConfig struct {
-	BindingName string `env:"BINDING_NAME" envDefault:"wallet"`
-}
-
-type Config struct {
-	Dapr   DaprConfig   `envPrefix:"DAPR_"`
-	Wallet WalletConfig `envPrefix:"WALLET_"`
-	Port   int          `env:"PORT" envDefault:"6000"`
-}
-
-type Server struct {
-	walletBindingName string
-	client            integrationConnect.IntegrationServiceClient
-}
-
-func newInsecureClient() *http.Client {
-	return &http.Client{
-		Transport: &http2.Transport{
-			AllowHTTP: true,
-			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
-				// If you're also using this client for non-h2c traffic, you may want
-				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
-				// in an allowlist.
-				return net.Dial(network, addr)
-			},
-			// Don't forget timeouts!
-		},
-	}
-}
-
+/*
 func newError(transactionID string) error {
 	err := connect.NewError(
 		connect.CodeInvalidArgument,
@@ -162,40 +109,23 @@ func (s *Server) GetBalance(
 	log.Println("res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
 
 	return res, nil
-}
+}*/
 
 func main() {
-	cfg := Config{}
-	opts := env.Options{RequiredIfNoDef: true}
-	if err := env.ParseWithOptions(&cfg, opts); err != nil {
+	cfg, err := ParseConfig()
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	client := integrationConnect.NewIntegrationServiceClient(
-		newInsecureClient(),
-		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
-		connect.WithGRPC(),
-		// connect.WithInterceptors(otelconnect.NewInterceptor()),
-	)
-
-	server := &Server{
-		walletBindingName: cfg.Wallet.BindingName,
-		client:            client,
+	if cfg.Mode == "grpc" {
+		if err := NewGRPCServer(cfg); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if err := NewHTTPServer(cfg); err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	mux := http.NewServeMux()
-	mux.Handle(
-		integrationConnect.NewIntegrationServiceHandler(
-			server,
-			// connect.WithInterceptors(otelconnect.NewInterceptor(otelconnect.WithTrustRemote())),
-		),
-	)
-
-	if err := http.ListenAndServe(
-		fmt.Sprintf(":%d", cfg.Port),
-		// Use h2c so we can serve HTTP/2 without TLS.
-		h2c.NewHandler(mux, &http2.Server{}),
-	); err != nil {
-		log.Fatal(err)
-	}
+	log.Printf("server started on port %d in %s mode", cfg.Port, cfg.Mode)
 }
