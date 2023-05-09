@@ -109,7 +109,8 @@ func (s *Server) GetBalance(
 	log.Println("res:grpc-trace-bin", res.Header().Get("grpc-trace-bin"))
 
 	return res, nil
-}*/
+}
+*/
 
 func main() {
 	cfg, err := ParseConfig()
