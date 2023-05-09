@@ -17,7 +17,6 @@ func NewLoggerMiddleware() func(c *fiber.Ctx) error {
 		logHeader(TraceParentHeader)
 		logHeader(TraceStateHeader)
 		logHeader(GRPCTraceBinHeader)
-		log.Println(c.UserContext())
 
 		return c.Next()
 	}

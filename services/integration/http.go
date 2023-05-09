@@ -20,7 +20,7 @@ func NewHTTPServer(cfg Config) error {
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
 	})
-	app.Use(NewTraceLoggerMiddleware())
+	app.Use(NewLoggerMiddleware())
 	app.Post("/launch", Launch)
 
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))

@@ -43,6 +43,8 @@ spec:
         env:
         - name: PORT
           value: "6000"
+        - name: INTEGRATION_APP_ID
+          value: "integration-grpc"
         ports:
         - containerPort: 6000
         imagePullPolicy: Always
