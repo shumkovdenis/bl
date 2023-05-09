@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 type LaunchInput struct {
@@ -21,20 +20,21 @@ func NewHTTPServer(cfg Config) error {
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
 	})
-	app.Use(logger.New(logger.Config{
-		CustomTags: map[string]logger.LogFunc{
-			"traceparent": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
-				return output.WriteString(c.Get("traceparent"))
-			},
-			"tracestate": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
-				return output.WriteString(c.Get("tracestate"))
-			},
-			"grpc-trace-bin": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
-				return output.WriteString(c.Get("grpc-trace-bin"))
-			},
-		},
-		Format: "[${time}] ${status} - ${latency} ${method} ${path} |${traceparent}|${tracestate}|${grpc-trace-bin}|\n",
-	}))
+	app.Use(NewTraceLoggerMiddleware())
+	// app.Use(logger.New(logger.Config{
+	// 	CustomTags: map[string]logger.LogFunc{
+	// 		"traceparent": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+	// 			return output.WriteString(c.Get("traceparent"))
+	// 		},
+	// 		"tracestate": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+	// 			return output.WriteString(c.Get("tracestate"))
+	// 		},
+	// 		"grpc-trace-bin": func(output logger.Buffer, c *fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+	// 			return output.WriteString(c.Get("grpc-trace-bin"))
+	// 		},
+	// 	},
+	// 	Format: "[${time}] ${status} - ${latency} ${method} ${path} |${traceparent}|${tracestate}|${grpc-trace-bin}|\n",
+	// }))
 	app.Post("/launch", Launch)
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))
 }

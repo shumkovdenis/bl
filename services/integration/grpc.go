@@ -19,8 +19,10 @@ type GRPCServer struct {
 func NewGRPCServer(cfg Config) error {
 	var server GRPCServer
 
+	interceptors := connect.WithInterceptors(NewTraceLoggerInterceptor())
+
 	mux := http.NewServeMux()
-	mux.Handle(integrationConnect.NewIntegrationServiceHandler(&server))
+	mux.Handle(integrationConnect.NewIntegrationServiceHandler(&server, interceptors))
 
 	return http.ListenAndServe(
 		fmt.Sprintf(":%d", cfg.Port),
