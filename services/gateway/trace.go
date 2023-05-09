@@ -20,33 +20,12 @@ func WithTraceparent(ctx context.Context, traceparent string) context.Context {
 	return context.WithValue(ctx, traceparentContextKey, traceparent)
 }
 
-func ExtractTraceparent(ctx context.Context) string {
-	if traceparent, ok := ctx.Value(traceparentContextKey).(string); ok {
-		return traceparent
-	}
-	return ""
-}
-
 func WithTracestate(ctx context.Context, tracestate string) context.Context {
 	return context.WithValue(ctx, tracestateContextKey, tracestate)
 }
 
-func ExtractTracestate(ctx context.Context) string {
-	if tracestate, ok := ctx.Value(tracestateContextKey).(string); ok {
-		return tracestate
-	}
-	return ""
-}
-
 func WithGRPCTraceBin(ctx context.Context, grpcTraceBin string) context.Context {
 	return context.WithValue(ctx, grpcTraceBinContextKey, grpcTraceBin)
-}
-
-func ExtractGRPCTraceBin(ctx context.Context) string {
-	if grpcTraceBin, ok := ctx.Value(grpcTraceBinContextKey).(string); ok {
-		return grpcTraceBin
-	}
-	return ""
 }
 
 func WithTrace(ctx context.Context, traceparent, tracestate, grpcTraceBin string) context.Context {
@@ -54,4 +33,23 @@ func WithTrace(ctx context.Context, traceparent, tracestate, grpcTraceBin string
 	ctx = WithTracestate(ctx, tracestate)
 	ctx = WithGRPCTraceBin(ctx, grpcTraceBin)
 	return ctx
+}
+
+func ExtractTrace(ctx context.Context, key traceContextKey) string {
+	if value, ok := ctx.Value(key).(string); ok {
+		return value
+	}
+	return ""
+}
+
+func ExtractTraceparent(ctx context.Context) string {
+	return ExtractTrace(ctx, traceparentContextKey)
+}
+
+func ExtractTracestate(ctx context.Context) string {
+	return ExtractTrace(ctx, tracestateContextKey)
+}
+
+func ExtractGRPCTraceBin(ctx context.Context) string {
+	return ExtractTrace(ctx, grpcTraceBinContextKey)
 }

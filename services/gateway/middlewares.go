@@ -7,7 +7,6 @@ import (
 )
 
 func NewLoggerMiddleware() func(c *fiber.Ctx) error {
-
 	return func(c *fiber.Ctx) error {
 		logHeader := func(header string) {
 			log.Println(header, c.Get(header))

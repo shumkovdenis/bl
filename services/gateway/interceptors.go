@@ -34,10 +34,17 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
+			setHeader := func(key traceContextKey) {
+				value := ExtractTrace(ctx, key)
+				if value != "" {
+					req.Header().Set(string(key), value)
+				}
+			}
+
 			if req.Spec().IsClient {
-				req.Header().Set(TraceParentHeader, ExtractTraceparent(ctx))
-				req.Header().Set(TraceStateHeader, ExtractTracestate(ctx))
-				req.Header().Set(GRPCTraceBinHeader, ExtractGRPCTraceBin(ctx))
+				setHeader(traceparentContextKey)
+				setHeader(tracestateContextKey)
+				setHeader(grpcTraceBinContextKey)
 			}
 
 			return next(ctx, req)
@@ -55,7 +62,6 @@ func NewAppInterceptor(appID string) connect.UnaryInterceptorFunc {
 			if req.Spec().IsClient {
 				req.Header().Set("dapr-app-id", appID)
 			}
-
 			return next(ctx, req)
 		})
 	}
