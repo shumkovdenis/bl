@@ -7,22 +7,38 @@ import (
 	"github.com/bufbuild/connect-go"
 )
 
+func modeName(isClient bool) string {
+	if isClient {
+		return "client"
+	}
+	return "server"
+}
+
 func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 	interceptor := func(next connect.UnaryFunc) connect.UnaryFunc {
 		return connect.UnaryFunc(func(
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			logHeader := func(header string) {
-				log.Println(header, req.Header().Get(header))
-			}
 
-			log.Println("logger interceptor where client is", req.Spec().IsClient)
-			logHeader(TraceParentHeader)
-			logHeader(TraceStateHeader)
-			logHeader(GRPCTraceBinHeader)
+			log.Println("--------------------")
+			log.Println("logger interceptor", modeName(req.Spec().IsClient))
+			log.Println("--------------------")
+			log.Println("request headers:")
+			logHeader(traceParentHeader, req.Header())
+			logHeader(traceStateHeader, req.Header())
+			logHeader(grpcTraceBinHeader, req.Header())
 
-			return next(ctx, req)
+			res, err := next(ctx, req)
+
+			log.Println("--------------------")
+			log.Println("response headers:")
+			logHeader(traceParentHeader, res.Header())
+			logHeader(traceStateHeader, res.Header())
+			logHeader(grpcTraceBinHeader, res.Header())
+			log.Println("--------------------")
+
+			return res, err
 		})
 	}
 	return connect.UnaryInterceptorFunc(interceptor)
@@ -34,26 +50,27 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			// setHeader := func(key traceContextKey) {
-			// 	value := ExtractTrace(ctx, key)
-			// 	if value != "" {
-			// 		req.Header().Set(string(key), value)
-			// 	}
-			// }
-
 			if req.Spec().IsClient {
 				// setHeader(traceparentContextKey)
 				// setHeader(tracestateContextKey)
 				// setHeader(grpcTraceBinContextKey)
 			} else {
 				ctx = WithTrace(ctx,
-					req.Header().Get(TraceParentHeader),
-					req.Header().Get(TraceStateHeader),
-					req.Header().Get(GRPCTraceBinHeader),
+					req.Header().Get(traceParentHeader),
+					req.Header().Get(traceStateHeader),
+					req.Header().Get(grpcTraceBinHeader),
 				)
 			}
 
-			return next(ctx, req)
+			res, err := next(ctx, req)
+
+			if req.Spec().IsClient {
+				// SetHeaderFromContext(traceParentHeader, req.Header(), ctx)
+				// SetHeaderFromContext(traceStateHeader, req.Header(), ctx)
+				setHeaderFromContext(grpcTraceBinContextKey, req.Header(), ctx)
+			}
+
+			return res, err
 		})
 	}
 	return connect.UnaryInterceptorFunc(interceptor)
