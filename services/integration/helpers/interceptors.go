@@ -13,16 +13,28 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			logHeader := func(header string) {
+			logRequestHeader := func(header string) {
 				log.Println(header, req.Header().Get(header))
 			}
 
 			log.Println("logger interceptor where client is", req.Spec().IsClient)
-			logHeader(TraceParentHeader)
-			logHeader(TraceStateHeader)
-			logHeader(GRPCTraceBinHeader)
+			log.Println("request headers")
+			logRequestHeader(TraceParentHeader)
+			logRequestHeader(TraceStateHeader)
+			logRequestHeader(GRPCTraceBinHeader)
 
-			return next(ctx, req)
+			res, err := next(ctx, req)
+
+			logResponseHeader := func(header string) {
+				log.Println(header, res.Header().Get(header))
+			}
+
+			log.Println("response headers")
+			logResponseHeader(TraceParentHeader)
+			logResponseHeader(TraceStateHeader)
+			logResponseHeader(GRPCTraceBinHeader)
+
+			return res, err
 		})
 	}
 	return connect.UnaryInterceptorFunc(interceptor)
