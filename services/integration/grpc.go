@@ -15,10 +15,24 @@ import (
 
 type GRPCServer struct {
 	integrationConnect.UnimplementedIntegrationServiceHandler
+	integrationService integrationConnect.IntegrationServiceClient
 }
 
 func NewGRPCServer(cfg Config) error {
-	var server GRPCServer
+	integrationService := integrationConnect.NewIntegrationServiceClient(
+		helpers.NewInsecureClient(),
+		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
+		connect.WithGRPC(),
+		connect.WithInterceptors(
+			helpers.NewTraceInterceptor(),
+			helpers.NewLoggerInterceptor(),
+			helpers.NewAppInterceptor("remote"),
+		),
+	)
+
+	server := GRPCServer{
+		integrationService: integrationService,
+	}
 
 	mux := http.NewServeMux()
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
@@ -40,8 +54,16 @@ func (s *GRPCServer) GetBalance(
 	ctx context.Context,
 	req *connect.Request[integration.GetBalanceRequest],
 ) (*connect.Response[integration.GetBalanceResponse], error) {
+	reqBalance := connect.NewRequest(&integration.GetBalanceRequest{})
+
+	resBalance, err := s.integrationService.GetBalance(ctx, reqBalance)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
 	res := connect.NewResponse(&integration.GetBalanceResponse{
-		Balance: 999,
+		Balance: resBalance.Msg.Balance,
 	})
+
 	return res, nil
 }
