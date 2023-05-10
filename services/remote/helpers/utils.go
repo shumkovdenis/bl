@@ -14,5 +14,5 @@ func setHeaderFromContext(key traceContextKey, header http.Header, ctx context.C
 }
 
 func logHeader(key string, header http.Header) {
-	log.Println(header, header.Get(key))
+	log.Println(key, header.Get(key))
 }
