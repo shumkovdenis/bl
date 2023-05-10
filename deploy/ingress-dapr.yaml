@@ -2,21 +2,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gateway
-  namespace: denis
+  namespace: ingress
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: 'false'
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /v1.0/invoke/gateway.denis/method/$1
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-    nginx.ingress.kubernetes.io/enable-opentracing: 'true'
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
-  ingressClassName: application
+  ingressClassName: dapr
   rules:
-    - host: denis.dev.releaseband.com
+    - host: denis-dapred.dev.releaseband.com
       http:
         paths:
-          - pathType: ImplementationSpecific
+          - path: /(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: gateway
+                name: ingress-dapr-dapr
                 port:
                   number: 80
