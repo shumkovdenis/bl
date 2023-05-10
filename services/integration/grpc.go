@@ -8,6 +8,7 @@ import (
 	"github.com/bufbuild/connect-go"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
+	"github.com/shumkovdenis/services/integration/helpers"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -22,7 +23,10 @@ func NewGRPCServer(cfg Config) error {
 	mux := http.NewServeMux()
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
 		&server,
-		connect.WithInterceptors(NewLoggerInterceptor()),
+		connect.WithInterceptors(
+			helpers.NewTraceInterceptor(),
+			helpers.NewLoggerInterceptor(),
+		),
 	))
 
 	return http.ListenAndServe(
