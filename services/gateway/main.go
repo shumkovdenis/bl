@@ -2,11 +2,9 @@ package main
 
 import (
 	"log"
-)
 
-// type IntegrationConfig struct {
-// 	AppID string `env:"APP_ID" envDefault:"integration"`
-// }
+	"github.com/shumkovdenis/bl/services/gateway/helpers"
+)
 
 /*
 func extractError(err error) (*integration.RollbackInfo, bool) {
@@ -31,11 +29,28 @@ func extractError(err error) (*integration.RollbackInfo, bool) {
 }
 */
 
+type DaprConfig struct {
+	HTTPPort int `env:"HTTP_PORT" envDefault:"3500"`
+	GRPCPort int `env:"GRPC_PORT" envDefault:"50001"`
+}
+
+type IntegrationConfig struct {
+	AppID string `env:"APP_ID" envDefault:"integration"`
+}
+
+type Config struct {
+	Dapr        DaprConfig        `envPrefix:"DAPR_"`
+	Port        int               `env:"PORT" envDefault:"6000"`
+	Integration IntegrationConfig `envPrefix:"INTEGRATION_"`
+}
+
 func main() {
-	cfg, err := ParseConfig()
-	if err != nil {
+	var cfg Config
+	if err := helpers.ParseConfig(&cfg); err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("server started on port %d", cfg.Port)
 
 	if err := NewHTTPServer(cfg); err != nil {
 		log.Fatal(err)
