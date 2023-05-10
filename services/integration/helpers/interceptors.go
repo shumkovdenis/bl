@@ -34,17 +34,17 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			// setHeader := func(key traceContextKey) {
-			// 	value := ExtractTrace(ctx, key)
-			// 	if value != "" {
-			// 		req.Header().Set(string(key), value)
-			// 	}
-			// }
+			setHeader := func(key traceContextKey) {
+				value := ExtractTrace(ctx, key)
+				if value != "" {
+					req.Header().Set(string(key), value)
+				}
+			}
 
 			if req.Spec().IsClient {
 				// setHeader(traceparentContextKey)
 				// setHeader(tracestateContextKey)
-				// setHeader(grpcTraceBinContextKey)
+				setHeader(grpcTraceBinContextKey)
 			} else {
 				ctx = WithTrace(ctx,
 					req.Header().Get(TraceParentHeader),
