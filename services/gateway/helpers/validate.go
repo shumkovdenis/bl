@@ -1,7 +1,7 @@
-package main
+package helpers
 
 import (
-	validator "github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator/v10"
 )
 
 var validate = validator.New()
@@ -12,9 +12,9 @@ type ValidateError struct {
 	Value       string `json:"value"`
 }
 
-func ExtractValidateError(err error) []*ValidateError {
+func Validate(s interface{}) []*ValidateError {
 	var errors []*ValidateError
-	if err != nil {
+	if err := validate.Struct(s); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			var element ValidateError
 			element.FailedField = err.StructNamespace()

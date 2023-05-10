@@ -5,9 +5,13 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	"github.com/gofiber/fiber/v2"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/shumkovdenis/bl/services/gateway/helpers"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 type InitInput struct {
 	Token string `json:"token" validate:"required"`
@@ -23,13 +27,13 @@ type HTTPServer struct {
 
 func NewHTTPServer(cfg Config) error {
 	integrationService := integrationConnect.NewIntegrationServiceClient(
-		NewInsecureClient(),
+		helpers.NewInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
 		connect.WithInterceptors(
-			NewTraceInterceptor(),
-			NewLoggerInterceptor(),
-			NewAppInterceptor(cfg.Integration.AppID),
+			helpers.NewTraceInterceptor(),
+			helpers.NewLoggerInterceptor(),
+			helpers.NewAppInterceptor(cfg.Integration.AppID),
 		),
 	)
 
@@ -42,8 +46,8 @@ func NewHTTPServer(cfg Config) error {
 		JSONDecoder: json.Unmarshal,
 	})
 	app.Use(
-		NewTraceMiddleware(),
-		NewLoggerMiddleware(),
+		helpers.NewTraceMiddleware(),
+		helpers.NewLoggerMiddleware(),
 	)
 	app.Post("/init", server.Init)
 	app.Post("/bet", server.Init)
@@ -60,8 +64,8 @@ func (s *HTTPServer) Init(ctx *fiber.Ctx) error {
 		})
 	}
 
-	if err := validate.Struct(&in); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(ExtractValidateError(err))
+	if err := helpers.Validate(&in); len(err) != 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	req := connect.NewRequest(&integration.GetBalanceRequest{})

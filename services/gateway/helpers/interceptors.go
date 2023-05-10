@@ -1,4 +1,4 @@
-package main
+package helpers
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 				log.Println(header, req.Header().Get(header))
 			}
 
-			log.Println("logger interceptor client is", req.Spec().IsClient)
+			log.Println("logger interceptor where client is", req.Spec().IsClient)
 			logHeader(TraceParentHeader)
 			logHeader(TraceStateHeader)
 			logHeader(GRPCTraceBinHeader)
@@ -45,6 +45,12 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 				setHeader(traceparentContextKey)
 				setHeader(tracestateContextKey)
 				setHeader(grpcTraceBinContextKey)
+			} else {
+				ctx = WithTrace(ctx,
+					req.Header().Get(TraceParentHeader),
+					req.Header().Get(TraceStateHeader),
+					req.Header().Get(GRPCTraceBinHeader),
+				)
 			}
 
 			return next(ctx, req)
