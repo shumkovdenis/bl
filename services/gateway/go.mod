@@ -3,6 +3,7 @@ module github.com/shumkovdenis/bl/services/gateway
 go 1.20
 
 require (
+	github.com/bufbuild/connect-go v1.7.0
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/gofiber/fiber/v2 v2.44.0
@@ -13,7 +14,6 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/bufbuild/connect-go v1.7.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
