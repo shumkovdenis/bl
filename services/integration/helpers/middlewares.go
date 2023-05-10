@@ -13,9 +13,9 @@ func NewLoggerMiddleware() func(c *fiber.Ctx) error {
 		}
 
 		log.Println("logger middleware", c.Path())
-		logHeader(TraceParentHeader)
-		logHeader(TraceStateHeader)
-		logHeader(GRPCTraceBinHeader)
+		logHeader(traceParentHeader)
+		logHeader(traceStateHeader)
+		logHeader(grpcTraceBinHeader)
 
 		return c.Next()
 	}
@@ -24,9 +24,9 @@ func NewLoggerMiddleware() func(c *fiber.Ctx) error {
 func NewTraceMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		ctx := WithTrace(c.UserContext(),
-			c.Get(TraceParentHeader),
-			c.Get(TraceStateHeader),
-			c.Get(GRPCTraceBinHeader),
+			c.Get(traceParentHeader),
+			c.Get(traceStateHeader),
+			c.Get(grpcTraceBinHeader),
 		)
 
 		c.SetUserContext(ctx)

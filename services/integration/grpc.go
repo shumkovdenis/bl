@@ -25,7 +25,6 @@ func NewGRPCServer(cfg Config) error {
 		connect.WithGRPC(),
 		connect.WithInterceptors(
 			helpers.NewTraceInterceptor(),
-			helpers.NewLoggerInterceptor(),
 			helpers.NewAppInterceptor("remote"),
 		),
 	)
@@ -38,8 +37,8 @@ func NewGRPCServer(cfg Config) error {
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
 		&server,
 		connect.WithInterceptors(
-			helpers.NewTraceInterceptor(),
 			helpers.NewLoggerInterceptor(),
+			helpers.NewTraceInterceptor(),
 		),
 	))
 

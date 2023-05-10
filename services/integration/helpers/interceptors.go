@@ -13,28 +13,19 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			logRequestHeader := func(header string) {
-				log.Println(header, req.Header().Get(header))
+			log.Println("------------------------------")
+			if req.Spec().IsClient {
+				log.Println("client logger interceptor")
+			} else {
+				log.Println("server logger interceptor")
 			}
+			log.Println("------------------------------")
+			logHeader(traceParentHeader, req.Header())
+			logHeader(traceStateHeader, req.Header())
+			logHeader(grpcTraceBinHeader, req.Header())
+			log.Println("------------------------------")
 
-			log.Println("logger interceptor where client is", req.Spec().IsClient)
-			log.Println("request headers")
-			logRequestHeader(TraceParentHeader)
-			logRequestHeader(TraceStateHeader)
-			logRequestHeader(GRPCTraceBinHeader)
-
-			res, err := next(ctx, req)
-
-			logResponseHeader := func(header string) {
-				log.Println(header, res.Header().Get(header))
-			}
-
-			log.Println("response headers")
-			logResponseHeader(TraceParentHeader)
-			logResponseHeader(TraceStateHeader)
-			logResponseHeader(GRPCTraceBinHeader)
-
-			return res, err
+			return next(ctx, req)
 		})
 	}
 	return connect.UnaryInterceptorFunc(interceptor)
@@ -46,22 +37,13 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			// setHeader := func(key traceContextKey) {
-			// 	value := ExtractTrace(ctx, key)
-			// 	if value != "" {
-			// 		req.Header().Set(string(key), value)
-			// 	}
-			// }
-
 			if req.Spec().IsClient {
-				// setHeader(traceparentContextKey)
-				// setHeader(tracestateContextKey)
-				// setHeader(grpcTraceBinContextKey)
+				setHeaderFromContext(traceparentContextKey, req.Header(), ctx)
 			} else {
 				ctx = WithTrace(ctx,
-					req.Header().Get(TraceParentHeader),
-					req.Header().Get(TraceStateHeader),
-					req.Header().Get(GRPCTraceBinHeader),
+					req.Header().Get(traceParentHeader),
+					req.Header().Get(traceStateHeader),
+					req.Header().Get(grpcTraceBinHeader),
 				)
 			}
 
