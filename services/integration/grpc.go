@@ -24,6 +24,7 @@ func NewGRPCServer(cfg Config) error {
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
 		connect.WithInterceptors(
+			helpers.NewLoggerInterceptor(),
 			helpers.NewTraceInterceptor(),
 			helpers.NewAppInterceptor("remote"),
 		),
