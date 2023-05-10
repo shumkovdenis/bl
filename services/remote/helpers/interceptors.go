@@ -67,6 +67,8 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			if req.Spec().IsClient {
 				// SetHeaderFromContext(traceParentHeader, req.Header(), ctx)
 				// SetHeaderFromContext(traceStateHeader, req.Header(), ctx)
+				// setHeaderFromContext(grpcTraceBinContextKey, res.Header(), ctx)
+			} else {
 				setHeaderFromContext(grpcTraceBinContextKey, res.Header(), ctx)
 			}
 
