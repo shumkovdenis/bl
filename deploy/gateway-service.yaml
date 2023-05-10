@@ -36,6 +36,7 @@ spec:
         dapr.io/app-port: "6000"
         dapr.io/enable-api-logging: "true"
         dapr.io/config: "tracing"
+        dapr.io/log-level: "debug"
     spec:
       containers:
       - name: gateway

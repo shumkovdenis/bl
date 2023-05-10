@@ -1,4 +1,5 @@
 @remote = https://denis.dev.releaseband.com
+@remoteDapr = https://denis-dapred.dev.releaseband.com
 @hostname = localhost
 @contentType = application/json
 
@@ -19,7 +20,7 @@ Content-Type: {{contentType}}
 @token = {{launch.response.body.token}}
 
 # # @name init
-POST {{remote}}/init HTTP/1.1
+POST {{remoteDapr}}/init HTTP/1.1
 # POST /init HTTP/1.1
 # Host: {{hostname}}:8081
 Content-Type: {{contentType}}
