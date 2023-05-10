@@ -38,7 +38,7 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				setHeaderFromContext(traceparentContextKey, req.Header(), ctx)
+				setHeaderFromContext(grpcTraceBinContextKey, req.Header(), ctx)
 			} else {
 				ctx = WithTrace(ctx,
 					req.Header().Get(traceParentHeader),
