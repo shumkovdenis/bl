@@ -51,3 +51,8 @@ Content-Type: {{contentType}}
     "token": "{{token}}"
 }
 
+###
+
+# @name gateway
+POST {{remote}}/gateway HTTP/1.1
+Content-Type: {{contentType}}
