@@ -37,11 +37,14 @@ func newSpanID() trace.SpanID {
 
 func setNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) {
 	value := ExtractGRPCTraceBin(ctx)
+	log.Println("ExtractGRPCTraceBin", value)
 	if value != "" {
 		sc, ok := utils.SpanContextFromBinary([]byte(value))
+		log.Println("SpanContextFromBinary", sc, ok)
 		if ok {
 			newsc := sc.WithSpanID(newSpanID())
 			val := utils.BinaryFromSpanContext(newsc)
+			log.Println("BinaryFromSpanContext", string(val))
 			header.Set(grpcTraceBinHeader, string(val))
 		}
 	}
