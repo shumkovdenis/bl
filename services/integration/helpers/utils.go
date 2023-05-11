@@ -151,7 +151,7 @@ func setNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) 
 			val := BinaryFromSpanContext(newsc)
 			s := base64.StdEncoding.EncodeToString(val)
 			log.Println("BinaryFromSpanContext", s)
-			header.Set(grpcTraceBinHeader, string(val))
+			header.Set(grpcTraceBinHeader, s)
 		}
 	}
 }
