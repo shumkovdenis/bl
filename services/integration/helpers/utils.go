@@ -139,7 +139,7 @@ func BinaryFromSpanContext(sc trace.SpanContext) []byte {
 	return b[:]
 }
 
-func setNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) {
+func SetNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) {
 	value := ExtractGRPCTraceBin(ctx)
 	log.Println("ExtractGRPCTraceBin", value)
 	if value != "" {

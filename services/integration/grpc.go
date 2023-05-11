@@ -66,6 +66,7 @@ func (s *GRPCServer) GetBalance(
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: resBalance.Msg.Balance,
 	})
+	helpers.SetNewGRPCTraceHeaderFromContext(res.Header(), ctx)
 
 	return res, nil
 }
