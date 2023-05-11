@@ -10,8 +10,8 @@ add-bitnami:
 install-redis:
 	helm install redis bitnami/redis --set architecture=standalone -n $(namespace)
 
-kube-apply:
-	kubectl apply -f ./deploy/ -n $(namespace)
+kube-apply-services:
+	kubectl apply -f ./deploy/services -n $(namespace)
 
 get-pods:
 	kubectl get pods -n $(namespace)
