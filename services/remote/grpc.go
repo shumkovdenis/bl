@@ -24,8 +24,8 @@ func NewGRPCServer(cfg Config) error {
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
 		&server,
 		connect.WithInterceptors(
-			helpers.NewLoggerInterceptor(),
 			helpers.NewTraceInterceptor(),
+			helpers.NewLoggerInterceptor(),
 		),
 	))
 
@@ -43,6 +43,5 @@ func (s *GRPCServer) GetBalance(
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: 9999,
 	})
-	res.Header().Set("grpc-trace-bin", helpers.ExtractGRPCTraceBin(ctx))
 	return res, nil
 }

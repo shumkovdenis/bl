@@ -14,6 +14,7 @@ type DaprConfig struct {
 type Config struct {
 	Dapr DaprConfig `envPrefix:"DAPR_"`
 	Port int        `env:"PORT" envDefault:"6000"`
+	Mode string     `env:"MODE" envDefault:"http"`
 }
 
 func main() {
@@ -22,9 +23,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("server started on port %d", cfg.Port)
+	log.Printf("server started on port %d in %s mode", cfg.Port, cfg.Mode)
 
-	if err := NewGRPCServer(cfg); err != nil {
-		log.Fatal(err)
+	if cfg.Mode == "grpc" {
+		if err := NewGRPCServer(cfg); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if err := NewHTTPServer(cfg); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
