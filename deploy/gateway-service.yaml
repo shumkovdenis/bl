@@ -20,6 +20,7 @@ metadata:
   name: gateway
   labels:
     app: gateway
+    dapr.io/enabled: "true"
 spec:
   replicas: 1
   selector:

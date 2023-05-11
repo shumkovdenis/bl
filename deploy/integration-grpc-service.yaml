@@ -4,6 +4,7 @@ metadata:
   name: integration-grpc
   labels:
     app: integration-grpc
+    dapr.io/enabled: "true"
 spec:
   replicas: 1
   selector:
