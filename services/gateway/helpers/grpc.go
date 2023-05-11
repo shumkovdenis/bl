@@ -2,10 +2,28 @@ package helpers
 
 import (
 	"context"
-	"log"
+	"crypto/tls"
+	"net"
+	"net/http"
 
 	"github.com/bufbuild/connect-go"
+	"golang.org/x/net/http2"
 )
+
+func NewInsecureClient() *http.Client {
+	return &http.Client{
+		Transport: &http2.Transport{
+			AllowHTTP: true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				// If you're also using this client for non-h2c traffic, you may want
+				// to delegate to tls.Dial if the network isn't TCP or the addr isn't
+				// in an allowlist.
+				return net.Dial(network, addr)
+			},
+			// Don't forget timeouts!
+		},
+	}
+}
 
 func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 	interceptor := func(next connect.UnaryFunc) connect.UnaryFunc {
@@ -13,31 +31,21 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			log.Println("------------------------------")
 			if req.Spec().IsClient {
-				log.Println("client request logger interceptor")
+				logBegin("client request " + req.Spec().Procedure)
 			} else {
-				log.Println("server request logger interceptor")
+				logBegin("server request " + req.Spec().Procedure)
 			}
-			log.Println("------------------------------")
-			logHeader(traceParentHeader, req.Header())
-			logHeader(traceStateHeader, req.Header())
-			logHeader(grpcTraceBinHeader, req.Header())
-			log.Println("------------------------------")
+			logTraceHeaders(req.Header())
 
 			res, err := next(ctx, req)
 
-			log.Println("------------------------------")
 			if req.Spec().IsClient {
-				log.Println("client response logger interceptor")
+				logBegin("client response " + req.Spec().Procedure)
 			} else {
-				log.Println("server response logger interceptor")
+				logBegin("server response " + req.Spec().Procedure)
 			}
-			log.Println("------------------------------")
-			logHeader(traceParentHeader, res.Header())
-			logHeader(traceStateHeader, res.Header())
-			logHeader(grpcTraceBinHeader, res.Header())
-			log.Println("------------------------------")
+			logTraceHeaders(res.Header())
 
 			return res, err
 		})
@@ -52,15 +60,10 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				setHeaderFromContext(grpcTraceBinContextKey, req.Header(), ctx)
+				SetTraceHeader(ctx, req.Header(), grpcTraceBinHeader)
 			} else {
-				ctx = WithTrace(ctx,
-					req.Header().Get(traceParentHeader),
-					req.Header().Get(traceStateHeader),
-					req.Header().Get(grpcTraceBinHeader),
-				)
+				ctx = WithAllTraceHeader(ctx, req.Header())
 			}
-
 			return next(ctx, req)
 		})
 	}
@@ -74,7 +77,7 @@ func NewAppInterceptor(appID string) connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				req.Header().Set("dapr-app-id", appID)
+				SetAppIdHeader(req.Header(), appID)
 			}
 			return next(ctx, req)
 		})
