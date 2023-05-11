@@ -7,13 +7,13 @@ import (
 
 const (
 	traceparent  = "00-f1780472bc9d01296f455d1dbffa3351-e3efc05568f38f63-01"
-	grpcTraceBin = "AAD/w6QpXa5Gi9HrIU/ZGb6hAf4DHe7VGxVzAgE"
+	grpcTraceBin = "AADWQszjVZDo9kK8fWHWQrCFAVbjC8cXdX69AgE"
 )
 
 func TestSpanContextFromBinary(t *testing.T) {
 	t.Run("test", func(t *testing.T) {
 		b, _ := base64.StdEncoding.DecodeString(grpcTraceBin)
-		t.Log(b)
+		t.Log(string(b))
 
 		// sc, ok := SpanContextFromW3CString(traceparent)
 		// t.Log(ok, sc.TraceID(), sc.SpanID(), sc.TraceFlags())

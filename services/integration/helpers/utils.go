@@ -143,17 +143,14 @@ func setNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) 
 	value := ExtractGRPCTraceBin(ctx)
 	log.Println("ExtractGRPCTraceBin", value)
 	if value != "" {
-		b, err := base64.StdEncoding.DecodeString(value)
-		if err != nil {
-			log.Println("DecodeString", err)
-			return
-		}
+		b, _ := base64.StdEncoding.DecodeString(value)
 		sc, ok := SpanContextFromBinary(b)
 		log.Println("SpanContextFromBinary", sc, ok)
 		if ok {
 			newsc := sc.WithSpanID(newSpanID())
 			val := BinaryFromSpanContext(newsc)
-			log.Println("BinaryFromSpanContext", string(val))
+			s := base64.StdEncoding.EncodeToString(val)
+			log.Println("BinaryFromSpanContext", s)
 			header.Set(grpcTraceBinHeader, string(val))
 		}
 	}
