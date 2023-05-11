@@ -31,9 +31,9 @@ func NewHTTPServer(cfg Config) error {
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connect.WithGRPC(),
 		connect.WithInterceptors(
+			helpers.NewAppInterceptor(cfg.Integration.AppID),
 			helpers.NewTraceInterceptor(),
 			helpers.NewLoggerInterceptor(),
-			helpers.NewAppInterceptor(cfg.Integration.AppID),
 		),
 	)
 

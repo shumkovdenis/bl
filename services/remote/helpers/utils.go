@@ -3,16 +3,23 @@ package helpers
 import (
 	"context"
 	"log"
-	"net/http"
 )
 
-func setHeaderFromContext(key traceContextKey, header http.Header, ctx context.Context) {
+type HeaderGetter interface {
+	Get(key string) string
+}
+
+type HeaderSetter interface {
+	Set(key, value string)
+}
+
+func logHeader(key string, header HeaderGetter) {
+	log.Println(key, header.Get(key))
+}
+
+func setHeaderFromContext(key traceContextKey, header HeaderSetter, ctx context.Context) {
 	value := ExtractTrace(ctx, key)
 	if value != "" {
 		header.Set(string(key), value)
 	}
-}
-
-func logHeader(key string, header http.Header) {
-	log.Println(key, header.Get(key))
 }

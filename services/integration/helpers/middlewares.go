@@ -6,16 +6,23 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type headerAdapter struct {
+	c *fiber.Ctx
+}
+
+func (a *headerAdapter) Get(key string) string {
+	return a.c.Get(key)
+}
+
 func NewLoggerMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		logHeader := func(header string) {
-			log.Println(header, c.Get(header))
-		}
-
+		adapter := headerAdapter{c: c}
+		log.Println("------------------------------")
 		log.Println("logger middleware", c.Path())
-		logHeader(traceParentHeader)
-		logHeader(traceStateHeader)
-		logHeader(grpcTraceBinHeader)
+		log.Println("------------------------------")
+		logHeader(traceParentHeader, &adapter)
+		logHeader(traceStateHeader, &adapter)
+		logHeader(grpcTraceBinHeader, &adapter)
 
 		return c.Next()
 	}

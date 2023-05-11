@@ -3,17 +3,17 @@ package helpers
 import "context"
 
 const (
-	TraceParentHeader  = "traceparent"
-	TraceStateHeader   = "tracestate"
-	GRPCTraceBinHeader = "grpc-trace-bin"
+	traceParentHeader  = "traceparent"
+	traceStateHeader   = "tracestate"
+	grpcTraceBinHeader = "grpc-trace-bin"
 )
 
 type traceContextKey string
 
 const (
-	traceparentContextKey  = traceContextKey(TraceParentHeader)
-	tracestateContextKey   = traceContextKey(TraceStateHeader)
-	grpcTraceBinContextKey = traceContextKey(GRPCTraceBinHeader)
+	traceparentContextKey  = traceContextKey(traceParentHeader)
+	tracestateContextKey   = traceContextKey(traceStateHeader)
+	grpcTraceBinContextKey = traceContextKey(grpcTraceBinHeader)
 )
 
 func WithTraceparent(ctx context.Context, traceparent string) context.Context {

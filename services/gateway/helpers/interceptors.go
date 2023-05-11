@@ -13,14 +13,17 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			logHeader := func(header string) {
-				log.Println(header, req.Header().Get(header))
+			log.Println("------------------------------")
+			if req.Spec().IsClient {
+				log.Println("client logger interceptor")
+			} else {
+				log.Println("server logger interceptor")
 			}
-
-			log.Println("logger interceptor where client is", req.Spec().IsClient)
-			logHeader(TraceParentHeader)
-			logHeader(TraceStateHeader)
-			logHeader(GRPCTraceBinHeader)
+			log.Println("------------------------------")
+			logHeader(traceParentHeader, req.Header())
+			logHeader(traceStateHeader, req.Header())
+			logHeader(grpcTraceBinHeader, req.Header())
+			log.Println("------------------------------")
 
 			return next(ctx, req)
 		})
@@ -34,22 +37,13 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
-			// setHeader := func(key traceContextKey) {
-			// 	value := ExtractTrace(ctx, key)
-			// 	if value != "" {
-			// 		req.Header().Set(string(key), value)
-			// 	}
-			// }
-
 			if req.Spec().IsClient {
-				// setHeader(traceparentContextKey)
-				// setHeader(tracestateContextKey)
-				// setHeader(grpcTraceBinContextKey)
+				setHeaderFromContext(grpcTraceBinContextKey, req.Header(), ctx)
 			} else {
 				ctx = WithTrace(ctx,
-					req.Header().Get(TraceParentHeader),
-					req.Header().Get(TraceStateHeader),
-					req.Header().Get(GRPCTraceBinHeader),
+					req.Header().Get(traceParentHeader),
+					req.Header().Get(traceStateHeader),
+					req.Header().Get(grpcTraceBinHeader),
 				)
 			}
 
