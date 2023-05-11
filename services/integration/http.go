@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/imroc/req/v3"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/shumkovdenis/services/integration/helpers"
 )
@@ -19,18 +20,55 @@ type LaunchOutput struct {
 	Token string `json:"token"`
 }
 
+type HTTPServer struct {
+	client *req.Client
+}
+
 func NewHTTPServer(cfg Config) error {
+	client := req.C().
+		SetBaseURL(fmt.Sprintf("http://localhost:%d", cfg.Dapr.HTTPPort)).
+		WrapRoundTripFunc(
+			helpers.NewClientAppMiddleware("remote"),
+			helpers.NewClientTraceMiddleware(),
+			helpers.NewClientLoggerMiddleware(),
+		)
+
+	server := HTTPServer{client: client}
+
 	app := fiber.New(fiber.Config{
 		JSONEncoder: json.Marshal,
 		JSONDecoder: json.Unmarshal,
 	})
 	app.Use(
-		helpers.NewTraceMiddleware(),
-		helpers.NewLoggerMiddleware(),
+		helpers.NewServerTraceMiddleware(),
+		helpers.NewServerLoggerMiddleware(),
 	)
+	app.Post("/integration", server.Integration)
 	app.Post("/launch", Launch)
 
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))
+}
+
+func (s *HTTPServer) Integration(ctx *fiber.Ctx) error {
+	data := fiber.Map{}
+
+	res, err := s.client.R().
+		SetContext(ctx.UserContext()).
+		SetSuccessResult(&data).
+		Post("/remote")
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if !res.IsSuccessState() {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": res.String(),
+		})
+	}
+
+	return ctx.JSON(&data)
 }
 
 func Launch(ctx *fiber.Ctx) error {

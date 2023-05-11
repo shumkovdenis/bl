@@ -1,8 +1,6 @@
 package helpers
 
 import (
-	"context"
-	"encoding/base64"
 	"encoding/hex"
 	"log"
 	"math/rand"
@@ -11,26 +9,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type HeaderGetter interface {
-	Get(key string) string
-}
-
-type HeaderSetter interface {
-	Set(key, value string)
-}
-
-func logHeader(key string, header HeaderGetter) {
-	log.Println(key, header.Get(key))
-}
-
-func setTraceHeaderFromContext(key traceContextKey, header HeaderSetter, ctx context.Context) {
-	value := ExtractTrace(ctx, key)
-	if value != "" {
-		header.Set(string(key), value)
-	}
-}
-
-func newSpanID() trace.SpanID {
+func NewSpanID() trace.SpanID {
 	randSource := rand.New(rand.NewSource(1))
 	sid := trace.SpanID{}
 	_, _ = randSource.Read(sid[:])
@@ -139,6 +118,7 @@ func BinaryFromSpanContext(sc trace.SpanContext) []byte {
 	return b[:]
 }
 
+/*
 func SetNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) {
 	value := ExtractGRPCTraceBin(ctx)
 	log.Println("ExtractGRPCTraceBin", value)
@@ -155,3 +135,4 @@ func SetNewGRPCTraceHeaderFromContext(header HeaderSetter, ctx context.Context) 
 		}
 	}
 }
+*/

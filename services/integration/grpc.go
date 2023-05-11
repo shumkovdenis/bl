@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
@@ -39,8 +38,8 @@ func NewGRPCServer(cfg Config) error {
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
 		&server,
 		connect.WithInterceptors(
-			helpers.NewLoggerInterceptor(),
 			helpers.NewTraceInterceptor(),
+			helpers.NewLoggerInterceptor(),
 		),
 	))
 
@@ -55,7 +54,6 @@ func (s *GRPCServer) GetBalance(
 	ctx context.Context,
 	req *connect.Request[integration.GetBalanceRequest],
 ) (*connect.Response[integration.GetBalanceResponse], error) {
-	log.Println("get balance")
 	reqBalance := connect.NewRequest(&integration.GetBalanceRequest{})
 
 	resBalance, err := s.integrationService.GetBalance(ctx, reqBalance)
@@ -66,7 +64,6 @@ func (s *GRPCServer) GetBalance(
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: resBalance.Msg.Balance,
 	})
-	helpers.SetNewGRPCTraceHeaderFromContext(res.Header(), ctx)
 
 	return res, nil
 }

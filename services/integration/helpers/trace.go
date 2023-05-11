@@ -1,55 +1,36 @@
 package helpers
 
-import "context"
-
-const (
-	traceParentHeader  = "traceparent"
-	traceStateHeader   = "tracestate"
-	grpcTraceBinHeader = "grpc-trace-bin"
+import (
+	"context"
+	"strings"
 )
 
 type traceContextKey string
 
-const (
-	traceparentContextKey  = traceContextKey(traceParentHeader)
-	tracestateContextKey   = traceContextKey(traceStateHeader)
-	grpcTraceBinContextKey = traceContextKey(grpcTraceBinHeader)
-)
-
-func WithTraceparent(ctx context.Context, traceparent string) context.Context {
-	return context.WithValue(ctx, traceparentContextKey, traceparent)
-}
-
-func WithTracestate(ctx context.Context, tracestate string) context.Context {
-	return context.WithValue(ctx, tracestateContextKey, tracestate)
-}
-
-func WithGRPCTraceBin(ctx context.Context, grpcTraceBin string) context.Context {
-	return context.WithValue(ctx, grpcTraceBinContextKey, grpcTraceBin)
-}
-
-func WithTrace(ctx context.Context, traceparent, tracestate, grpcTraceBin string) context.Context {
-	ctx = WithTraceparent(ctx, traceparent)
-	ctx = WithTracestate(ctx, tracestate)
-	ctx = WithGRPCTraceBin(ctx, grpcTraceBin)
+func WithTraceHeader(ctx context.Context, header HeaderGetter, key string) context.Context {
+	if value := strings.TrimSpace(header.Get(key)); value != "" {
+		ctx = context.WithValue(ctx, traceContextKey(key), value)
+	}
 	return ctx
 }
 
-func ExtractTrace(ctx context.Context, key traceContextKey) string {
-	if value, ok := ctx.Value(key).(string); ok {
+func WithAllTraceHeader(ctx context.Context, header HeaderGetter) context.Context {
+	ctx = WithTraceHeader(ctx, header, traceParentHeader)
+	ctx = WithTraceHeader(ctx, header, traceStateHeader)
+	ctx = WithTraceHeader(ctx, header, grpcTraceBinHeader)
+	return ctx
+}
+
+func ExtractTraceHeader(ctx context.Context, key string) string {
+	if value, ok := ctx.Value(traceContextKey(key)).(string); ok {
 		return value
 	}
 	return ""
 }
 
-func ExtractTraceparent(ctx context.Context) string {
-	return ExtractTrace(ctx, traceparentContextKey)
-}
-
-func ExtractTracestate(ctx context.Context) string {
-	return ExtractTrace(ctx, tracestateContextKey)
-}
-
-func ExtractGRPCTraceBin(ctx context.Context) string {
-	return ExtractTrace(ctx, grpcTraceBinContextKey)
+func SetTraceHeader(ctx context.Context, header HeaderSetter, key string) {
+	value := ExtractTraceHeader(ctx, key)
+	if value != "" {
+		header.Set(key, value)
+	}
 }
