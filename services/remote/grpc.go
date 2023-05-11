@@ -43,5 +43,6 @@ func (s *GRPCServer) GetBalance(
 	res := connect.NewResponse(&integration.GetBalanceResponse{
 		Balance: 9999,
 	})
+	res.Header().Set("grpc-trace-bin", helpers.ExtractGRPCTraceBin(ctx))
 	return res, nil
 }
