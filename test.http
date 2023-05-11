@@ -39,3 +39,15 @@ Content-Type: {{contentType}}
 {
     "player_id": "123"
 }
+
+###
+
+# @name dapr
+POST /v1.0/invoke/gateway/method/init HTTP/1.1
+Host: {{hostname}}:8282
+Content-Type: {{contentType}}
+
+{
+    "token": "{{token}}"
+}
+
