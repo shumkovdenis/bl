@@ -5,8 +5,9 @@ metadata:
   namespace: denis
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: 'false'
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /v1.0/invoke/gateway/method/$1
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/enable-opentracing: 'true'
 spec:
   ingressClassName: application
@@ -14,9 +15,10 @@ spec:
     - host: denis.dev.releaseband.com
       http:
         paths:
-          - pathType: ImplementationSpecific
+          - path: /(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: gateway
+                name: gateway-dapr
                 port:
                   number: 80
