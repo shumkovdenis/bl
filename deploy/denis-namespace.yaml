@@ -5,4 +5,4 @@ metadata:
   annotations:
     config.linkerd.io/proxy-await: "enabled"
     config.linkerd.io/proxy-log-format: "json"
-    linkerd.io/inject: "enabled"
+    # linkerd.io/inject: "enabled"
