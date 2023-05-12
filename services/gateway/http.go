@@ -32,7 +32,7 @@ func NewHTTPServer(cfg Config) error {
 		SetBaseURL(fmt.Sprintf("http://localhost:%d", cfg.Dapr.HTTPPort)).
 		WrapRoundTripFunc(
 			helpers.NewClientLoggerMiddleware(),
-			helpers.NewClientTraceMiddleware(),
+			helpers.NewClientTraceMiddleware(cfg.HTTPTrace),
 			helpers.NewClientAppMiddleware(cfg.Integration.AppID),
 		)
 
@@ -42,7 +42,7 @@ func NewHTTPServer(cfg Config) error {
 		connect.WithGRPC(),
 		connect.WithInterceptors(
 			helpers.NewAppInterceptor(cfg.Integration.AppID),
-			helpers.NewTraceInterceptor(),
+			helpers.NewTraceInterceptor(cfg.GRPCTrace),
 			helpers.NewLoggerInterceptor(),
 		),
 	)

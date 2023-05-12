@@ -56,12 +56,18 @@ func NewClientLoggerMiddleware() func(rt req.RoundTripper) req.RoundTripFunc {
 	}
 }
 
-func NewClientTraceMiddleware() func(rt req.RoundTripper) req.RoundTripFunc {
+func NewClientTraceMiddleware(cfg TraceConfig) func(rt req.RoundTripper) req.RoundTripFunc {
 	return func(rt req.RoundTripper) req.RoundTripFunc {
 		return func(req *req.Request) (*req.Response, error) {
-			SetTraceHeader(req.Context(), req.Headers, traceParentHeader)
-			SetTraceHeader(req.Context(), req.Headers, traceStateHeader)
-
+			if cfg.UseTraceParentHeader {
+				SetTraceHeader(req.Context(), req.Headers, traceParentHeader)
+			}
+			if cfg.UseTraceStateHeader {
+				SetTraceHeader(req.Context(), req.Headers, traceStateHeader)
+			}
+			if cfg.UseGrpcTraceBinHeader {
+				SetTraceHeader(req.Context(), req.Headers, grpcTraceBinHeader)
+			}
 			return rt.RoundTrip(req)
 		}
 	}

@@ -39,9 +39,11 @@ type IntegrationConfig struct {
 }
 
 type Config struct {
-	Dapr        DaprConfig        `envPrefix:"DAPR_"`
-	Port        int               `env:"PORT" envDefault:"6000"`
-	Integration IntegrationConfig `envPrefix:"INTEGRATION_"`
+	Dapr        DaprConfig          `envPrefix:"DAPR_"`
+	Port        int                 `env:"PORT" envDefault:"6000"`
+	HTTPTrace   helpers.TraceConfig `envPrefix:"HTTP_TRACE_"`
+	GRPCTrace   helpers.TraceConfig `envPrefix:"GRPC_TRACE_"`
+	Integration IntegrationConfig   `envPrefix:"INTEGRATION_"`
 }
 
 func main() {
