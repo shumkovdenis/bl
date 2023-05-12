@@ -9,7 +9,7 @@ type headerAdapter struct {
 	m map[string]string
 }
 
-func (a *headerAdapter) Get(key string) string {
+func (a headerAdapter) Get(key string) string {
 	if v, ok := a.m[key]; ok {
 		return v
 	}

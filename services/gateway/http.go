@@ -31,9 +31,9 @@ func NewHTTPServer(cfg Config) error {
 	client := req.C().
 		SetBaseURL(fmt.Sprintf("http://localhost:%d", cfg.Dapr.HTTPPort)).
 		WrapRoundTripFunc(
-			helpers.NewClientAppMiddleware(cfg.Integration.AppID),
-			helpers.NewClientTraceMiddleware(),
 			helpers.NewClientLoggerMiddleware(),
+			helpers.NewClientTraceMiddleware(),
+			helpers.NewClientAppMiddleware(cfg.Integration.AppID),
 		)
 
 	integrationService := integrationConnect.NewIntegrationServiceClient(
