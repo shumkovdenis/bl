@@ -25,7 +25,7 @@ func NewGRPCServer(cfg Config) error {
 		connect.WithGRPC(),
 		connect.WithInterceptors(
 			helpers.NewAppInterceptor("remote"),
-			helpers.NewTraceInterceptor(cfg.HTTPTrace),
+			helpers.NewTraceInterceptor(cfg.GRPCTrace),
 			helpers.NewLoggerInterceptor(),
 		),
 	)
