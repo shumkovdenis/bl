@@ -10,8 +10,8 @@ import (
 func NewHTTPServer(cfg Config) error {
 	app := fiber.New()
 	app.Use(
-		helpers.NewClientLoggerMiddleware(),
-		helpers.NewClientTraceMiddleware(),
+		helpers.NewServerTraceMiddleware(),
+		helpers.NewServerLoggerMiddleware(),
 	)
 	app.Post("/remote", remoteHandler)
 
