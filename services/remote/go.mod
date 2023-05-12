@@ -8,7 +8,6 @@ require (
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/gofiber/fiber/v2 v2.45.0
 	github.com/imroc/req/v3 v3.34.0
-	github.com/shumkovdenis/bl/services/gateway v0.0.0-20230511085224-cc821c8d2fd6
 	github.com/shumkovdenis/protobuf-schema v1.4.0
 	go.opentelemetry.io/otel/trace v1.15.1
 	golang.org/x/net v0.9.0

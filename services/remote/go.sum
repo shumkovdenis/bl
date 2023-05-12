@@ -71,8 +71,6 @@ github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94/go.mod h1:90zrgN3
 github.com/savsgio/gotils v0.0.0-20220530130905-52f3993e8d6d/go.mod h1:Gy+0tqhJvgGlqnTF8CVGP0AaGRjwBtXs/a5PA0Y3+A4=
 github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee h1:8Iv5m6xEo1NR1AvpV+7XmhI4r39LGNzwUL4YpMuL5vk=
 github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee/go.mod h1:qwtSXrKuJh/zsFQ12yEE89xfCrGKK63Rr7ctU/uCo4g=
-github.com/shumkovdenis/bl/services/gateway v0.0.0-20230511085224-cc821c8d2fd6 h1:i9Fn/6RVGEsdw/hO9jCn4PaMmvqw/8kbv9A4JSLZ+ME=
-github.com/shumkovdenis/bl/services/gateway v0.0.0-20230511085224-cc821c8d2fd6/go.mod h1:X5H9OsxPqhcmHtifW/Xfa9+91kg5+jJFsAUfCq09tZ8=
 github.com/shumkovdenis/protobuf-schema v1.4.0 h1:hrJwg0O8KUoA0uvcE2vc048NPS0YNN67Js5m6TQl2/U=
 github.com/shumkovdenis/protobuf-schema v1.4.0/go.mod h1:iI4dhpbHuxjq1IlTARpSfv2ZxCQf/ZU3a0DI85WGIXw=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/shumkovdenis/bl/services/gateway/helpers"
+	"github.com/shumkovdenis/services/remote/helpers"
 )
 
 func NewHTTPServer(cfg Config) error {
 	app := fiber.New()
 	app.Use(
-		helpers.NewTraceMiddleware(),
-		helpers.NewLoggerMiddleware(),
+		helpers.NewClientLoggerMiddleware(),
+		helpers.NewClientTraceMiddleware(),
 	)
 	app.Post("/remote", remoteHandler)
 
