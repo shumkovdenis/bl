@@ -60,6 +60,7 @@ func NewTraceInterceptor() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
+				SetTraceHeader(ctx, req.Header(), traceParentHeader)
 				SetTraceHeader(ctx, req.Header(), grpcTraceBinHeader)
 			} else {
 				ctx = WithAllTraceHeader(ctx, req.Header())
