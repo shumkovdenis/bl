@@ -3,9 +3,9 @@ package helpers
 import "github.com/caarlos0/env/v8"
 
 type TraceConfig struct {
-	UseTraceParentHeader  bool `env:"TRACE_PARENT" envDefault:"false"`
-	UseTraceStateHeader   bool `env:"TRACE_STATE" envDefault:"false"`
-	UseGrpcTraceBinHeader bool `env:"GRPC_TRACE_BIN" envDefault:"false"`
+	UseTraceParentHeader  bool `env:"TRACE_PARENT"`
+	UseTraceStateHeader   bool `env:"TRACE_STATE"`
+	UseGrpcTraceBinHeader bool `env:"GRPC_TRACE_BIN"`
 }
 
 func ParseConfig(cfg interface{}) error {
