@@ -8,7 +8,7 @@ import (
 type traceContextKey string
 
 func WithTraceHeader(ctx context.Context, header HeaderGetter, key string) context.Context {
-	if value := strings.TrimSpace(header.Get(key)); value != "" {
+	if value := strings.TrimSpace(GetHeader(header, key)); value != "" {
 		ctx = context.WithValue(ctx, traceContextKey(key), value)
 	}
 	return ctx

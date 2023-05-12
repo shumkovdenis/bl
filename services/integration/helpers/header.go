@@ -1,5 +1,7 @@
 package helpers
 
+import "net/http"
+
 const (
 	traceParentHeader  = "traceparent"
 	traceStateHeader   = "tracestate"
@@ -14,6 +16,10 @@ type HeaderSetter interface {
 	Set(key, value string)
 }
 
-func SetAppIdHeader(headers HeaderSetter, appID string) {
-	headers.Set("dapr-app-id", appID)
+func GetHeader(header HeaderGetter, key string) string {
+	return header.Get(http.CanonicalHeaderKey(key))
+}
+
+func SetAppIdHeader(header HeaderSetter, appID string) {
+	header.Set("dapr-app-id", appID)
 }

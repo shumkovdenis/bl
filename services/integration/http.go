@@ -28,9 +28,9 @@ func NewHTTPServer(cfg Config) error {
 	client := req.C().
 		SetBaseURL(fmt.Sprintf("http://localhost:%d", cfg.Dapr.HTTPPort)).
 		WrapRoundTripFunc(
-			helpers.NewClientAppMiddleware("remote"),
-			helpers.NewClientTraceMiddleware(),
 			helpers.NewClientLoggerMiddleware(),
+			helpers.NewClientTraceMiddleware(),
+			helpers.NewClientAppMiddleware("remote"),
 		)
 
 	server := HTTPServer{client: client}
