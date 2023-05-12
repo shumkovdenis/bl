@@ -11,7 +11,7 @@ func logBegin(msg string) {
 }
 
 func logTraceHeader(header HeaderGetter, key string) {
-	log.Printf("header %s=%s", key, header.Get(key))
+	log.Printf("header %s=%s", key, GetHeader(header, key))
 }
 
 func logTraceHeaders(header HeaderGetter) {
