@@ -31,9 +31,11 @@ type DaprConfig struct {
 }
 
 type Config struct {
-	Dapr DaprConfig `envPrefix:"DAPR_"`
-	Port int        `env:"PORT" envDefault:"6000"`
-	Mode string     `env:"MODE" envDefault:"http"`
+	Dapr      DaprConfig          `envPrefix:"DAPR_"`
+	Port      int                 `env:"PORT" envDefault:"6000"`
+	Mode      string              `env:"MODE" envDefault:"http"`
+	HTTPTrace helpers.TraceConfig `envPrefix:"HTTP_TRACE_"`
+	GRPCTrace helpers.TraceConfig `envPrefix:"GRPC_TRACE_"`
 }
 
 func main() {
