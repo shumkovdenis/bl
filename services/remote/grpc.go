@@ -24,7 +24,7 @@ func NewGRPCServer(cfg Config) error {
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
 		&server,
 		connect.WithInterceptors(
-			helpers.NewTraceInterceptor(),
+			helpers.NewTraceInterceptor(cfg.GRPCTrace),
 			helpers.NewLoggerInterceptor(),
 		),
 	))

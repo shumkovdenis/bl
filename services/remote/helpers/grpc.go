@@ -53,14 +53,22 @@ func NewLoggerInterceptor() connect.UnaryInterceptorFunc {
 	return connect.UnaryInterceptorFunc(interceptor)
 }
 
-func NewTraceInterceptor() connect.UnaryInterceptorFunc {
+func NewTraceInterceptor(cfg TraceConfig) connect.UnaryInterceptorFunc {
 	interceptor := func(next connect.UnaryFunc) connect.UnaryFunc {
 		return connect.UnaryFunc(func(
 			ctx context.Context,
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				SetTraceHeader(ctx, req.Header(), grpcTraceBinHeader)
+				if cfg.UseTraceParentHeader {
+					SetTraceHeader(ctx, req.Header(), traceParentHeader)
+				}
+				if cfg.UseTraceStateHeader {
+					SetTraceHeader(ctx, req.Header(), traceStateHeader)
+				}
+				if cfg.UseGrpcTraceBinHeader {
+					SetTraceHeader(ctx, req.Header(), grpcTraceBinHeader)
+				}
 			} else {
 				ctx = WithAllTraceHeader(ctx, req.Header())
 			}
