@@ -17,7 +17,7 @@ spec:
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "integration-grpc"
-        dapr.io/app-protocol: "http"
+        dapr.io/app-protocol: "grpc"
         dapr.io/app-port: "6001"
         dapr.io/enable-api-logging: "true"
         dapr.io/config: "tracing"
@@ -29,7 +29,19 @@ spec:
         - name: PORT
           value: "6001"
         - name: MODE
-          value: "http"
+          value: "grpc"
+        - name: HTTP_TRACE_TRACE_PARENT
+          value: "true"
+        - name: HTTP_TRACE_TRACE_STATE
+          value: "false"
+        - name: HTTP_TRACE_GRPC_TRACE_BIN
+          value: "false"
+        - name: GRPC_TRACE_TRACE_PARENT
+          value: "false"
+        - name: GRPC_TRACE_TRACE_STATE
+          value: "false"
+        - name: GRPC_TRACE_GRPC_TRACE_BIN
+          value: "false"
         ports:
         - containerPort: 6001
         imagePullPolicy: Always

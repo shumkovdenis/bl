@@ -1,14 +1,10 @@
 @remote = https://denis.dev.releaseband.com
-@remoteDapr = https://denis-dapred.dev.releaseband.com
-@hostname = localhost
-@contentType = application/json
 
 ###
-
 # @name launch
 POST /launch HTTP/1.1
-Host: {{hostname}}:8080
-Content-Type: {{contentType}}
+Host: localhost:8080
+Content-Type: application/json
 
 {
     "playerId": "player",
@@ -16,43 +12,39 @@ Content-Type: {{contentType}}
 }
 
 ###
-
 @token = {{launch.response.body.token}}
 
 # @name init
 POST {{remote}}/init HTTP/1.1
-# POST /init HTTP/1.1
-# Host: {{hostname}}:8081
-Content-Type: {{contentType}}
+Content-Type: application/json
 
 {
     "token": "{{token}}"
 }
 
 ###
-
 # @name balance
 POST /integration.v1.IntegrationService/GetBalance HTTP/1.1
-Host: {{hostname}}:8081
-Content-Type: {{contentType}}
+Host: localhost:8080
+Content-Type: application/json
 
 {
     "player_id": "123"
 }
 
 ###
-
-# @name dapr
-POST /v1.0/invoke/gateway/method/init HTTP/1.1
-Host: {{hostname}}:8282
-Content-Type: {{contentType}}
-
-{
-    "token": "{{token}}"
-}
+# @name http
+POST {{remote}}/http HTTP/1.1
+Content-Type: application/json
 
 ###
+# @name grpc
+POST {{remote}}/grpc HTTP/1.1
+Content-Type: application/json
 
-# @name gateway
-POST {{remote}}/gateway HTTP/1.1
-Content-Type: {{contentType}}
+###
+# @name test
+POST /http HTTP/1.1
+Host: localhost:6000
+Content-Type: application/json
+traceparent: 00-58f774820d1130301d91423693afc257-f8a45c3285e07fef-01

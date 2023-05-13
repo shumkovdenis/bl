@@ -47,6 +47,18 @@ spec:
           value: "6000"
         - name: INTEGRATION_APP_ID
           value: "integration-grpc"
+        - name: HTTP_TRACE_TRACE_PARENT
+          value: "true"
+        - name: HTTP_TRACE_TRACE_STATE
+          value: "false"
+        - name: HTTP_TRACE_GRPC_TRACE_BIN
+          value: "false"
+        - name: GRPC_TRACE_TRACE_PARENT
+          value: "false"
+        - name: GRPC_TRACE_TRACE_STATE
+          value: "false"
+        - name: GRPC_TRACE_GRPC_TRACE_BIN
+          value: "false"
         ports:
         - containerPort: 6000
         imagePullPolicy: Always

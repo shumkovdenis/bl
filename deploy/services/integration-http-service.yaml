@@ -28,6 +28,18 @@ spec:
         env:
         - name: PORT
           value: "7001"
+        - name: HTTP_TRACE_TRACE_PARENT
+          value: "true"
+        - name: HTTP_TRACE_TRACE_STATE
+          value: "false"
+        - name: HTTP_TRACE_GRPC_TRACE_BIN
+          value: "false"
+        - name: GRPC_TRACE_TRACE_PARENT
+          value: "false"
+        - name: GRPC_TRACE_TRACE_STATE
+          value: "false"
+        - name: GRPC_TRACE_GRPC_TRACE_BIN
+          value: "false"
         ports:
         - containerPort: 7001
         imagePullPolicy: Always
