@@ -109,7 +109,7 @@ func (s *HTTPServer) GRPC(c *fiber.Ctx) error {
 
 	client := pb.NewGreeterClient(conn)
 
-	ctx := metadata.AppendToOutgoingContext(c.UserContext(), "dapr-app-id", "remote")
+	ctx := metadata.AppendToOutgoingContext(c.UserContext(), "dapr-app-id", "integration-grpc")
 
 	out, err := client.SayHello(ctx, &pb.HelloRequest{Name: "gateway"})
 	if err != nil {
