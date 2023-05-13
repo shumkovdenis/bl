@@ -27,7 +27,11 @@ func main() {
 
 	log.Printf("server started on port %d in %s mode", cfg.Port, cfg.Mode)
 
-	if cfg.Mode == "connect" {
+	if cfg.Mode == "grpc" {
+		if err := NewGRPCServer(cfg); err != nil {
+			log.Fatal(err)
+		}
+	} else if cfg.Mode == "connect" {
 		if err := NewConnectServer(cfg); err != nil {
 			log.Fatal(err)
 		}

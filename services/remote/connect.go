@@ -18,11 +18,11 @@ type ConnectServer struct {
 }
 
 func NewConnectServer(cfg Config) error {
-	var server ConnectServer
+	var connectServer ConnectServer
 
 	mux := http.NewServeMux()
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
-		&server,
+		&connectServer,
 		connect.WithInterceptors(
 			helpers.NewTraceInterceptor(cfg.GRPCTrace),
 			helpers.NewLoggerInterceptor(),

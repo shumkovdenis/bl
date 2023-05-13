@@ -13,11 +13,11 @@ func NewHTTPServer(cfg Config) error {
 		helpers.NewServerTraceMiddleware(),
 		helpers.NewServerLoggerMiddleware(),
 	)
-	app.Post("/remote", remoteHandler)
+	app.Post("/http", remoteHandler)
 
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))
 }
 
 func remoteHandler(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{"msg": "remote"})
+	return ctx.JSON(fiber.Map{"message": "http remote"})
 }
