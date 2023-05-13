@@ -14,22 +14,11 @@ import (
 
 type GRPCServer struct {
 	pb.UnimplementedGreeterServer
-	client pb.GreeterClient
+	config Config
 }
 
 func NewGRPCServer(cfg Config) error {
-	conn, err := grpc.Dial(
-		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
-	if err != nil {
-		return err
-	}
-
-	client := pb.NewGreeterClient(conn)
-
-	grpcServer := GRPCServer{client: client}
+	grpcServer := GRPCServer{config: cfg}
 
 	server := grpc.NewServer()
 
@@ -44,13 +33,25 @@ func NewGRPCServer(cfg Config) error {
 }
 
 func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	conn, err := grpc.Dial(
+		fmt.Sprintf("localhost:%d", s.config.Dapr.GRPCPort),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	client := pb.NewGreeterClient(conn)
+
 	md, _ := metadata.FromIncomingContext(ctx)
 
 	log.Println("metadata from incoming context:", md)
 
 	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
 
-	out, err := s.client.SayHello(ctx, &pb.HelloRequest{Name: in.GetName()})
+	out, err := client.SayHello(ctx, &pb.HelloRequest{Name: in.GetName()})
 	if err != nil {
 		return nil, err
 	}
