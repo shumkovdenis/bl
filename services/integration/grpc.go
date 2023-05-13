@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 
-	"github.com/shumkovdenis/services/integration/helpers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
@@ -44,20 +43,28 @@ func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hel
 	}
 	defer conn.Close()
 
+	headersIn, _ := metadata.FromIncomingContext(ctx)
+	log.Printf("headersIn: %s", headersIn)
+
 	client := pb.NewGreeterClient(conn)
 
-	md, _ := metadata.FromIncomingContext(ctx)
+	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
 
-	traceParent := md["traceparent"][0]
-	grpcTraceBin := md["grpc-trace-bin"][0]
-	log.Println("metadata traceParent:", traceParent)
-	log.Println("metadata grpc-trace-bin:", grpcTraceBin)
+	headersOut, _ := metadata.FromOutgoingContext(ctx)
+	log.Printf("headersOut: %s", headersOut)
 
-	sc, ok := helpers.SpanContextFromBinary([]byte(grpcTraceBin))
-	log.Println("sc:", sc.TraceID(), sc.SpanID(), "ok:", ok)
+	// md, _ := metadata.FromIncomingContext(ctx)
 
-	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
-	ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", grpcTraceBin)
+	// traceParent := md["traceparent"][0]
+	// grpcTraceBin := md["grpc-trace-bin"][0]
+	// log.Println("metadata traceParent:", traceParent)
+	// log.Println("metadata grpc-trace-bin:", grpcTraceBin)
+
+	// sc, ok := helpers.SpanContextFromBinary([]byte(grpcTraceBin))
+	// log.Println("sc:", sc.TraceID(), sc.SpanID(), "ok:", ok)
+
+	// ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
+	// ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", grpcTraceBin)
 
 	// grpc.SetHeader(ctx, metadata.Pairs("grpc-trace-bin", grpcTraceBin))
 
