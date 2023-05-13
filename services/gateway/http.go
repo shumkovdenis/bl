@@ -10,6 +10,10 @@ import (
 	"github.com/shumkovdenis/bl/services/gateway/helpers"
 	integration "github.com/shumkovdenis/protobuf-schema/gen/integration/v1"
 	integrationConnect "github.com/shumkovdenis/protobuf-schema/gen/integration/v1/integrationv1connect"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	pb "google.golang.org/grpc/examples/helloworld/helloworld"
+	"google.golang.org/grpc/metadata"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -23,18 +27,30 @@ type InitOutput struct {
 }
 
 type HTTPServer struct {
-	client             *req.Client
+	httpClient         *req.Client
+	grpcClient         pb.GreeterClient
 	integrationService integrationConnect.IntegrationServiceClient
 }
 
 func NewHTTPServer(cfg Config) error {
-	client := req.C().
+	httpClient := req.C().
 		SetBaseURL(fmt.Sprintf("http://localhost:%d", cfg.Dapr.HTTPPort)).
 		WrapRoundTripFunc(
 			helpers.NewClientLoggerMiddleware(),
 			helpers.NewClientTraceMiddleware(cfg.HTTPTrace),
 			helpers.NewClientAppMiddleware(cfg.Integration.AppID),
 		)
+
+	conn, err := grpc.Dial(
+		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		return err
+	}
+
+	grpcClient := pb.NewGreeterClient(conn)
 
 	integrationService := integrationConnect.NewIntegrationServiceClient(
 		helpers.NewInsecureClient(),
@@ -48,7 +64,8 @@ func NewHTTPServer(cfg Config) error {
 	)
 
 	server := &HTTPServer{
-		client:             client,
+		httpClient:         httpClient,
+		grpcClient:         grpcClient,
 		integrationService: integrationService,
 	}
 
@@ -60,20 +77,21 @@ func NewHTTPServer(cfg Config) error {
 		helpers.NewServerTraceMiddleware(),
 		helpers.NewServerLoggerMiddleware(),
 	)
-	app.Post("/gateway", server.Gateway)
+	app.Post("/http", server.HTTP)
+	app.Post("/grpc", server.GRPC)
 	app.Post("/init", server.Init)
 	app.Post("/bet", server.Init)
 
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))
 }
 
-func (s *HTTPServer) Gateway(ctx *fiber.Ctx) error {
+func (s *HTTPServer) HTTP(ctx *fiber.Ctx) error {
 	data := fiber.Map{}
 
-	res, err := s.client.R().
+	res, err := s.httpClient.R().
 		SetContext(ctx.UserContext()).
 		SetSuccessResult(&data).
-		Post("/integration")
+		Post("/http")
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
@@ -87,6 +105,17 @@ func (s *HTTPServer) Gateway(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(&data)
+}
+
+func (s *HTTPServer) GRPC(c *fiber.Ctx) error {
+	ctx := metadata.AppendToOutgoingContext(c.UserContext(), "dapr-app-id", "remote")
+
+	out, err := s.grpcClient.SayHello(ctx, &pb.HelloRequest{Name: "gateway"})
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(&fiber.Map{"message": out.GetMessage()})
 }
 
 func (s *HTTPServer) Init(ctx *fiber.Ctx) error {
