@@ -27,8 +27,8 @@ type InitOutput struct {
 }
 
 type HTTPServer struct {
+	config             Config
 	httpClient         *req.Client
-	grpcClient         pb.GreeterClient
 	integrationService integrationConnect.IntegrationServiceClient
 }
 
@@ -40,17 +40,6 @@ func NewHTTPServer(cfg Config) error {
 			helpers.NewClientTraceMiddleware(cfg.HTTPTrace),
 			helpers.NewClientAppMiddleware(cfg.Integration.AppID),
 		)
-
-	conn, err := grpc.Dial(
-		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
-	)
-	if err != nil {
-		return err
-	}
-
-	grpcClient := pb.NewGreeterClient(conn)
 
 	integrationService := integrationConnect.NewIntegrationServiceClient(
 		helpers.NewInsecureClient(),
@@ -64,8 +53,8 @@ func NewHTTPServer(cfg Config) error {
 	)
 
 	server := &HTTPServer{
+		config:             cfg,
 		httpClient:         httpClient,
-		grpcClient:         grpcClient,
 		integrationService: integrationService,
 	}
 
@@ -108,9 +97,21 @@ func (s *HTTPServer) HTTP(ctx *fiber.Ctx) error {
 }
 
 func (s *HTTPServer) GRPC(c *fiber.Ctx) error {
+	conn, err := grpc.Dial(
+		fmt.Sprintf("localhost:%d", s.config.Dapr.GRPCPort),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pb.NewGreeterClient(conn)
+
 	ctx := metadata.AppendToOutgoingContext(c.UserContext(), "dapr-app-id", "remote")
 
-	out, err := s.grpcClient.SayHello(ctx, &pb.HelloRequest{Name: "gateway"})
+	out, err := client.SayHello(ctx, &pb.HelloRequest{Name: "gateway"})
 	if err != nil {
 		return err
 	}
