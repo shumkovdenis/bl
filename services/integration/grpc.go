@@ -48,16 +48,18 @@ func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hel
 
 	md, _ := metadata.FromIncomingContext(ctx)
 
+	traceParent := md["traceparent"][0]
 	grpcTraceBin := md["grpc-trace-bin"][0]
+	log.Println("metadata traceParent:", traceParent)
 	log.Println("metadata grpc-trace-bin:", grpcTraceBin)
-
-	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
 
 	sc, ok := helpers.SpanContextFromBinary([]byte(grpcTraceBin))
 	log.Println("sc:", sc.TraceID(), sc.SpanID(), "ok:", ok)
-	// ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", string(md["grpc-trace-bin"][0]))
 
-	grpc.SetHeader(ctx, metadata.Pairs("grpc-trace-bin", grpcTraceBin))
+	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
+	ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", grpcTraceBin)
+
+	// grpc.SetHeader(ctx, metadata.Pairs("grpc-trace-bin", grpcTraceBin))
 
 	req := &pb.HelloRequest{Name: in.GetName()}
 	out, err := client.SayHello(ctx, req)

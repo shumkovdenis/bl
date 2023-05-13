@@ -33,7 +33,9 @@ func NewGRPCServer(cfg Config) error {
 func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 
+	traceParent := md["traceparent"][0]
 	grpcTraceBin := md["grpc-trace-bin"][0]
+	log.Println("metadata traceParent:", traceParent)
 	log.Println("metadata grpc-trace-bin:", grpcTraceBin)
 
 	return &pb.HelloReply{Message: "grpc remote"}, nil
