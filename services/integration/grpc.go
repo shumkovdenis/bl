@@ -50,6 +50,7 @@ func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hel
 	log.Println("metadata from incoming context:", md)
 
 	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
+	ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", md["grpc-trace-bin"][0])
 
 	out, err := client.SayHello(ctx, &pb.HelloRequest{Name: in.GetName()})
 	if err != nil {

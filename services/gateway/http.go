@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/gofiber/fiber/v2"
@@ -97,6 +98,10 @@ func (s *HTTPServer) HTTP(ctx *fiber.Ctx) error {
 }
 
 func (s *HTTPServer) GRPC(c *fiber.Ctx) error {
+	md, _ := metadata.FromIncomingContext(c.UserContext())
+
+	log.Println("metadata from incoming context:", md)
+
 	conn, err := grpc.Dial(
 		fmt.Sprintf("localhost:%d", s.config.Dapr.GRPCPort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
