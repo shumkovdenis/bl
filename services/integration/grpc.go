@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/shumkovdenis/services/integration/helpers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
@@ -51,6 +52,9 @@ func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hel
 	log.Println("metadata grpc-trace-bin:", grpcTraceBin)
 
 	ctx = metadata.AppendToOutgoingContext(ctx, "dapr-app-id", "remote")
+
+	sc, ok := helpers.SpanContextFromBinary([]byte(grpcTraceBin))
+	log.Println("sc:", sc.TraceID(), sc.SpanID(), "ok:", ok)
 	// ctx = metadata.AppendToOutgoingContext(ctx, "grpc-trace-bin", string(md["grpc-trace-bin"][0]))
 
 	grpc.SetHeader(ctx, metadata.Pairs("grpc-trace-bin", grpcTraceBin))
