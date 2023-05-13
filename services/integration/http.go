@@ -43,7 +43,7 @@ func NewHTTPServer(cfg Config) error {
 		helpers.NewServerTraceMiddleware(),
 		helpers.NewServerLoggerMiddleware(),
 	)
-	app.Post("/integration", server.Integration)
+	app.Post("/http", server.Integration)
 	app.Post("/launch", Launch)
 
 	return app.Listen(fmt.Sprintf(":%d", cfg.Port))
@@ -55,7 +55,7 @@ func (s *HTTPServer) Integration(ctx *fiber.Ctx) error {
 	res, err := s.client.R().
 		SetContext(ctx.UserContext()).
 		SetSuccessResult(&data).
-		Post("/remote")
+		Post("/http")
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),

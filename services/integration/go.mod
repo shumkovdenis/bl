@@ -12,6 +12,8 @@ require (
 	github.com/shumkovdenis/protobuf-schema v1.3.0
 	go.opentelemetry.io/otel/trace v1.11.2
 	golang.org/x/net v0.10.0
+	google.golang.org/grpc v1.55.0
+	google.golang.org/grpc/examples v0.0.0-20230511185653-1db474c85cb3
 )
 
 require (
@@ -20,6 +22,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/golang/mock v1.6.0 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20230510103437-eeec1cb781c3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -51,5 +54,6 @@ require (
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/tools v0.9.1 // indirect
+	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 )

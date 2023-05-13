@@ -30,13 +30,13 @@ func NewConnectServer(cfg Config) error {
 		),
 	)
 
-	server := ConnectServer{
+	connectServer := ConnectServer{
 		integrationService: integrationService,
 	}
 
 	mux := http.NewServeMux()
 	mux.Handle(integrationConnect.NewIntegrationServiceHandler(
-		&server,
+		&connectServer,
 		connect.WithInterceptors(
 			helpers.NewTraceInterceptor(cfg.GRPCTrace),
 			helpers.NewLoggerInterceptor(),
