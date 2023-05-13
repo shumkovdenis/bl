@@ -49,6 +49,7 @@ func (s *GRPCServer) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.Hel
 	client := pb.NewGreeterClient(conn)
 
 	headersIn.Set("dapr-app-id", "remote")
+	headersIn.Delete("traceparent")
 
 	ctx = metadata.NewOutgoingContext(context.Background(), headersIn)
 
