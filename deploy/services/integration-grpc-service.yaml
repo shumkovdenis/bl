@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: integration-grpc
+        dapr.io/enabled: "true"
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "integration-grpc"
@@ -23,25 +24,25 @@ spec:
         dapr.io/config: "tracing"
     spec:
       containers:
-      - name: integration-grpc
-        image: ghcr.io/shumkovdenis/bl-integration:main
-        env:
-        - name: PORT
-          value: "6001"
-        - name: MODE
-          value: "grpc"
-        - name: HTTP_TRACE_TRACE_PARENT
-          value: "true"
-        - name: HTTP_TRACE_TRACE_STATE
-          value: "false"
-        - name: HTTP_TRACE_GRPC_TRACE_BIN
-          value: "false"
-        - name: GRPC_TRACE_TRACE_PARENT
-          value: "false"
-        - name: GRPC_TRACE_TRACE_STATE
-          value: "false"
-        - name: GRPC_TRACE_GRPC_TRACE_BIN
-          value: "false"
-        ports:
-        - containerPort: 6001
-        imagePullPolicy: Always
+        - name: integration-grpc
+          image: ghcr.io/shumkovdenis/bl-integration:main
+          env:
+            - name: PORT
+              value: "6001"
+            - name: MODE
+              value: "grpc"
+            - name: HTTP_TRACE_TRACE_PARENT
+              value: "true"
+            - name: HTTP_TRACE_TRACE_STATE
+              value: "false"
+            - name: HTTP_TRACE_GRPC_TRACE_BIN
+              value: "false"
+            - name: GRPC_TRACE_TRACE_PARENT
+              value: "false"
+            - name: GRPC_TRACE_TRACE_STATE
+              value: "false"
+            - name: GRPC_TRACE_GRPC_TRACE_BIN
+              value: "false"
+          ports:
+            - containerPort: 6001
+          imagePullPolicy: Always
