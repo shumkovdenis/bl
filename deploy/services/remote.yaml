@@ -16,7 +16,7 @@ spec:
       annotations:
         dapr.io/enabled: "true"
         dapr.io/app-id: "remote"
-        dapr.io/app-protocol: "grpc"
+        dapr.io/app-protocol: "http"
         dapr.io/app-port: "6003"
         dapr.io/config: "tracing"
     spec:
@@ -27,7 +27,7 @@ spec:
         - name: PORT
           value: "6003"
         - name: MODE
-          value: "grpc"
+          value: "connect"
         - name: HTTP_TRACE_TRACE_PARENT
           value: "true"
         - name: HTTP_TRACE_TRACE_STATE
@@ -39,7 +39,7 @@ spec:
         - name: GRPC_TRACE_TRACE_STATE
           value: "false"
         - name: GRPC_TRACE_GRPC_TRACE_BIN
-          value: "false"
+          value: "true"
         ports:
         - containerPort: 6003
         imagePullPolicy: Always
