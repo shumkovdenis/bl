@@ -6,6 +6,9 @@ require (
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/gofiber/fiber/v2 v2.45.0
 	github.com/json-iterator/go v1.1.12
+	github.com/rs/zerolog v1.29.1
+	go.opentelemetry.io/otel v1.15.1
+	go.opentelemetry.io/otel/trace v1.15.1
 )
 
 require (

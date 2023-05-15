@@ -11,23 +11,25 @@ type DaprConfig struct {
 	GRPCPort int `env:"GRPC_PORT" envDefault:"50001"`
 }
 
-type CallServiceConfig struct {
-	Name string `env:"NAME"`
+type CalleeConfig struct {
+	ServiceName string `env:"SERVICE_NAME" envDefault:"service"`
+	Mode        string `env:"MODE" envDefault:"http"`
 }
 
 type Config struct {
-	Dapr        DaprConfig        `envPrefix:"DAPR_"`
-	ServiceName string            `env:"SERVICE_NAME"`
-	Mode        string            `env:"MODE" envDefault:"http"`
-	Port        int               `env:"PORT" envDefault:"6000"`
-	CallService CallServiceConfig `envPrefix:"CALL_SERVICE_"`
+	Dapr        DaprConfig   `envPrefix:"DAPR_"`
+	ServiceName string       `env:"SERVICE_NAME" envDefault:"service"`
+	Mode        string       `env:"MODE" envDefault:"http"`
+	Port        int          `env:"PORT" envDefault:"6000"`
+	Callee      CalleeConfig `envPrefix:"CALLEE_"`
 }
 
 func (c *Config) Log() {
 	log.Println("service name:", c.ServiceName)
 	log.Println("mode:", c.Mode)
 	log.Println("port:", c.Port)
-	log.Println("call service name:", c.CallService.Name)
+	log.Println("callee service name:", c.Callee.ServiceName)
+	log.Println("callee mode:", c.Callee.Mode)
 }
 
 func ParseConfig(cfg interface{}) error {
