@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -29,7 +30,12 @@ func NewHTTPCallee(cfg Config) *httpCallee {
 }
 
 func (c *httpCallee) Call(ctx context.Context, msg Message) (Message, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.url, nil)
+	data, err := json.Marshal(&msg)
+	if err != nil {
+		return Message{}, fmt.Errorf("failed to marshal message: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.url, bytes.NewReader(data))
 	if err != nil {
 		return Message{}, fmt.Errorf("failed to create request: %w", err)
 	}
