@@ -1,11 +1,11 @@
-name: build remote
+name: build
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "./**/*.go"
+      - "./**.go"
   workflow_dispatch:
 
 jobs:
