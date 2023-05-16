@@ -54,7 +54,7 @@ func (c httpCallee) Call(ctx context.Context, msg Message) (Message, error) {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode >= 200 && res.StatusCode < 300 {
+	if res.StatusCode < 400 {
 		return Message{}, fmt.Errorf("unexpected status code: %d", res.StatusCode)
 	}
 
