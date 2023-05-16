@@ -17,7 +17,10 @@ func InjectTraceContext() connect.UnaryInterceptorFunc {
 		) (connect.AnyResponse, error) {
 			if !req.Spec().IsClient {
 				log.Println(req.Header())
-				log.Println(req.Header().Get(trace.TraceparentHeader))
+				log.Println(req.Header().Get(trace.GrpcTraceBinHeader))
+				t := req.Header().Get(trace.GrpcTraceBinHeader)
+				sc, ok := trace.SpanContextFromBinary([]byte(t))
+				log.Println(sc.TraceID(), sc.SpanID(), ok)
 			}
 			return next(ctx, req)
 		})
