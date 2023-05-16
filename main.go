@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
 	var cfg Config
 	if err := ParseConfig(&cfg); err != nil {
-		log.Fatal("failed to parse config:", err)
+		log.Fatal().Err(err).Msg("failed to parse config")
 	}
 	cfg.Log()
 
@@ -23,13 +23,13 @@ func main() {
 
 	if cfg.Mode == "http" {
 		if err := NewHTTPService(cfg, callee); err != nil {
-			log.Fatal("failed to start http server:", err)
+			log.Fatal().Err(err).Msg("failed to start http server")
 		}
 	} else if cfg.Mode == "connect" {
 		if err := NewConnectService(cfg, callee); err != nil {
-			log.Fatal("failed to start connect server:", err)
+			log.Fatal().Err(err).Msg("failed to start connect server")
 		}
 	} else {
-		log.Fatal("unknown mode")
+		log.Fatal().Msg("unknown mode")
 	}
 }

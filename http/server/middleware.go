@@ -19,7 +19,7 @@ func InjectTraceContext() func(c *fiber.Ctx) error {
 func InjectTraceContextLogger() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		ctx := c.UserContext()
-		ctx = logger.WithTraceContextLogger(ctx)
+		ctx = logger.WithTraceContext(ctx)
 		c.SetUserContext(ctx)
 		return c.Next()
 	}

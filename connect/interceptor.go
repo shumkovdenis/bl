@@ -50,7 +50,7 @@ func InjectTraceContextLogger() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if !req.Spec().IsClient {
-				ctx = logger.WithTraceContextLogger(ctx)
+				ctx = logger.WithTraceContext(ctx)
 			}
 			return next(ctx, req)
 		})

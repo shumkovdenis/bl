@@ -9,7 +9,6 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/rs/zerolog v1.29.1
 	github.com/shumkovdenis/protobuf-schema v1.5.0
-	go.opentelemetry.io/otel v1.15.1
 	go.opentelemetry.io/otel/trace v1.15.1
 	golang.org/x/net v0.9.0
 )
@@ -31,6 +30,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.47.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
+	go.opentelemetry.io/otel v1.15.1 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect

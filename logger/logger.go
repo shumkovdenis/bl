@@ -7,7 +7,7 @@ import (
 	"github.com/shumkovdenis/bl/trace"
 )
 
-func WithTraceContextLogger(ctx context.Context) context.Context {
+func WithTraceContext(ctx context.Context) context.Context {
 	sc := trace.TraceContextFromContext(ctx)
 
 	logger := log.With().

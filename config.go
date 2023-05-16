@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 
 	"github.com/caarlos0/env/v8"
 )
@@ -25,11 +25,13 @@ type Config struct {
 }
 
 func (c *Config) Log() {
-	log.Println("service name:", c.ServiceName)
-	log.Println("mode:", c.Mode)
-	log.Println("port:", c.Port)
-	log.Println("callee service name:", c.Callee.ServiceName)
-	log.Println("callee mode:", c.Callee.Mode)
+	log.Info().
+		Str("service name", c.ServiceName).
+		Str("mode", c.Mode).
+		Int("port", c.Port).
+		Str("callee service name", c.Callee.ServiceName).
+		Str("callee mode", c.Callee.Mode).
+		Msg("config")
 }
 
 func ParseConfig(cfg interface{}) error {

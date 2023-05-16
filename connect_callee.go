@@ -6,7 +6,7 @@ import (
 
 	"github.com/bufbuild/connect-go"
 	connectUtils "github.com/shumkovdenis/bl/connect"
-	example "github.com/shumkovdenis/protobuf-schema/gen/example/v1"
+	examplePb "github.com/shumkovdenis/protobuf-schema/gen/example/v1"
 	exampleConnect "github.com/shumkovdenis/protobuf-schema/gen/example/v1/examplev1connect"
 )
 
@@ -26,7 +26,7 @@ func NewConnectCallee(cfg Config) *connectCallee {
 }
 
 func (c *connectCallee) Call(ctx context.Context, msg Message) (Message, error) {
-	req := connect.NewRequest(&example.CallRequest{
+	req := connect.NewRequest(&examplePb.CallRequest{
 		Message: msg.Content,
 	})
 
