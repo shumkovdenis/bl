@@ -2,17 +2,17 @@ package connect
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/shumkovdenis/bl/logger"
 	"github.com/shumkovdenis/bl/trace"
-	"go.opentelemetry.io/otel/propagation"
 )
 
-type ConnectHeaderCarrier propagation.HeaderCarrier
+type ConnectHeaderCarrier http.Header
 
 func (c ConnectHeaderCarrier) Get(key string) string {
-	value := propagation.HeaderCarrier(c).Get(key)
+	value := http.Header(c).Get(key)
 	if key == trace.GrpcTraceBinHeader {
 		b, _ := connect.DecodeBinaryHeader(value)
 		return string(b)
@@ -24,11 +24,7 @@ func (c ConnectHeaderCarrier) Set(key, value string) {
 	if key == trace.GrpcTraceBinHeader {
 		value = connect.EncodeBinaryHeader([]byte(value))
 	}
-	propagation.HeaderCarrier(c).Set(key, value)
-}
-
-func (c ConnectHeaderCarrier) Keys() []string {
-	return propagation.HeaderCarrier(c).Keys()
+	http.Header(c).Set(key, value)
 }
 
 func InjectTraceContext() connect.UnaryInterceptorFunc {
@@ -38,8 +34,8 @@ func InjectTraceContext() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if !req.Spec().IsClient {
-				carrier := trace.GRPCHeaderCarrier(ConnectHeaderCarrier(req.Header()))
-				ctx = trace.WithTraceContext(ctx, carrier)
+				carrier := ConnectHeaderCarrier(req.Header())
+				ctx = trace.ExtractBinaryTraceContext(ctx, carrier)
 			}
 			return next(ctx, req)
 		})
@@ -88,10 +84,8 @@ func AddTraceContextHeader() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				header := req.Header()
-				carrier := trace.GRPCHeaderCarrier(
-					ConnectHeaderCarrier(header))
-				trace.InjectTraceContext(ctx, carrier)
+				carrier := ConnectHeaderCarrier(req.Header())
+				trace.InjectBinaryTraceContext(ctx, carrier)
 			}
 			return next(ctx, req)
 		})
