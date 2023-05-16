@@ -17,6 +17,8 @@ func main() {
 		callee = NewHTTPCallee(cfg)
 	} else if cfg.Callee.Mode == "connect" {
 		callee = NewConnectCallee(cfg)
+	} else if cfg.Callee.Mode == "error" {
+		callee = NewErrorCallee()
 	} else {
 		callee = NewFakeCallee()
 	}

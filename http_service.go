@@ -22,7 +22,7 @@ func NewHTTPService(cfg Config, caller Callee) error {
 	return server.Listen(fmt.Sprintf(":%d", cfg.Port))
 }
 
-func (s *httpService) Handler(c *fiber.Ctx) error {
+func (s httpService) Handler(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	logger := log.Ctx(ctx)
 

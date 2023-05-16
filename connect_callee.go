@@ -33,7 +33,7 @@ func NewConnectCallee(cfg Config) *connectCallee {
 	return &connectCallee{client: client}
 }
 
-func (c *connectCallee) Call(ctx context.Context, msg Message) (Message, error) {
+func (c connectCallee) Call(ctx context.Context, msg Message) (Message, error) {
 	req := connect.NewRequest(&examplePb.CallRequest{
 		Message: msg.Content,
 	})

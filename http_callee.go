@@ -37,7 +37,7 @@ func NewHTTPCallee(cfg Config) *httpCallee {
 	}
 }
 
-func (c *httpCallee) Call(ctx context.Context, msg Message) (Message, error) {
+func (c httpCallee) Call(ctx context.Context, msg Message) (Message, error) {
 	data, err := json.Marshal(&msg)
 	if err != nil {
 		return Message{}, fmt.Errorf("failed to marshal message: %w", err)

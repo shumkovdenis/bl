@@ -34,7 +34,7 @@ func NewConnectService(cfg Config, caller Callee) error {
 	)
 }
 
-func (s *connectService) Call(
+func (s connectService) Call(
 	ctx context.Context,
 	req *connect.Request[example.CallRequest],
 ) (*connect.Response[example.CallResponse], error) {
