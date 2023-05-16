@@ -21,12 +21,6 @@ func NewConnectCallee(cfg Config) *connectCallee {
 		connectUtils.WithClientOptions(
 			connectUtils.AddDaprAppIDHeader(cfg.Callee.ServiceName),
 		),
-		// connect.WithGRPC(),
-		// connect.WithInterceptors(
-		// 	helpers.NewAppInterceptor("remote"),
-		// 	helpers.NewTraceInterceptor(cfg.GRPCTrace),
-		// 	helpers.NewLoggerInterceptor(),
-		// ),
 	)
 	return &connectCallee{client: client}
 }

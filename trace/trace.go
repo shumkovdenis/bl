@@ -11,49 +11,60 @@ import (
 const (
 	TraceparentHeader  = "traceparent"
 	TracestateHeader   = "tracestate"
-	GrpcTraceBinHeader = "grpc-trace-bin"
+	GrpcTraceBinHeader = "Grpc-Trace-Bin"
 )
 
 var (
 	traceContext propagation.TraceContext
 )
 
-type canonicalMapCarrier propagation.MapCarrier
+type CanonicalMapCarrier propagation.MapCarrier
 
-func (c canonicalMapCarrier) Get(key string) string {
+func (c CanonicalMapCarrier) Get(key string) string {
 	return propagation.MapCarrier(c).Get(http.CanonicalHeaderKey(key))
 }
 
-func (c canonicalMapCarrier) Set(key, value string) {
+func (c CanonicalMapCarrier) Set(key, value string) {
 	propagation.MapCarrier(c).Set(http.CanonicalHeaderKey(key), value)
 }
 
-func (c canonicalMapCarrier) Keys() []string {
+func (c CanonicalMapCarrier) Keys() []string {
 	return propagation.MapCarrier(c).Keys()
 }
 
-type grpcHeaderCarrier propagation.HeaderCarrier
+type GRPCHeaderCarrier propagation.HeaderCarrier
 
-func (c grpcHeaderCarrier) Get(key string) string {
-	return propagation.HeaderCarrier(c).Get(http.CanonicalHeaderKey(key))
+func (c GRPCHeaderCarrier) Get(key string) string {
+	if key == TraceparentHeader {
+		grpcTraceBin := propagation.HeaderCarrier(c).Get(GrpcTraceBinHeader)
+		sc, _ := SpanContextFromBinary([]byte(grpcTraceBin))
+		return SpanContextToW3CString(sc)
+	}
+	return propagation.HeaderCarrier(c).Get(key)
 }
 
-func (c grpcHeaderCarrier) Set(key, value string) {
-	propagation.HeaderCarrier(c).Set(http.CanonicalHeaderKey(key), value)
+func (c GRPCHeaderCarrier) Set(key, value string) {
+	if key == TraceparentHeader {
+		sc, _ := SpanContextFromW3CString(value)
+		grpcTraceBin := BinaryFromSpanContext(sc)
+		propagation.HeaderCarrier(c).Set(GrpcTraceBinHeader, string(grpcTraceBin))
+	} else {
+		propagation.HeaderCarrier(c).Set(key, value)
+	}
 }
 
-func (c grpcHeaderCarrier) Keys() []string {
+func (c GRPCHeaderCarrier) Keys() []string {
 	return propagation.HeaderCarrier(c).Keys()
 }
 
-func WithTraceContextFromMap(ctx context.Context, headers map[string]string) context.Context {
-	return traceContext.Extract(ctx, canonicalMapCarrier(headers))
+func InjectTraceContext(ctx context.Context, carrier propagation.TextMapCarrier) {
+	traceContext.Inject(ctx, carrier)
+}
+
+func WithTraceContext(ctx context.Context, carrier propagation.TextMapCarrier) context.Context {
+	return traceContext.Extract(ctx, carrier)
 }
 
 func TraceContextFromContext(ctx context.Context) trace.SpanContext {
 	return trace.SpanContextFromContext(ctx)
-}
-
-func InjectTraceContext(ctx context.Context, header http.Header) {
-	traceContext.Inject(ctx, propagation.HeaderCarrier(header))
 }

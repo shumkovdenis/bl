@@ -9,7 +9,8 @@ import (
 func InjectTraceContext() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		ctx := c.UserContext()
-		ctx = trace.WithTraceContextFromMap(ctx, c.GetReqHeaders())
+		headers := c.GetReqHeaders()
+		ctx = trace.WithTraceContext(ctx, trace.CanonicalMapCarrier(headers))
 		c.SetUserContext(ctx)
 		return c.Next()
 	}

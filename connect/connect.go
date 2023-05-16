@@ -27,7 +27,10 @@ func NewInsecureClient() *http.Client {
 
 func WithHandlerOptions(interceptors ...connect.Interceptor) connect.HandlerOption {
 	return connect.WithHandlerOptions(
-		connect.WithInterceptors(InjectTraceContext()),
+		connect.WithInterceptors(
+			InjectTraceContext(),
+			InjectTraceContextLogger(),
+		),
 		connect.WithInterceptors(interceptors...),
 	)
 }
@@ -35,6 +38,7 @@ func WithHandlerOptions(interceptors ...connect.Interceptor) connect.HandlerOpti
 func WithClientOptions(interceptors ...connect.Interceptor) connect.ClientOption {
 	return connect.WithClientOptions(
 		connect.WithGRPC(),
+		connect.WithInterceptors(AddTraceContextHeader()),
 		connect.WithInterceptors(interceptors...),
 	)
 }

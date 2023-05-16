@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/shumkovdenis/bl/trace"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 // https://jonfriesen.ca/articles/go-http-client-middleware
@@ -64,7 +65,7 @@ func AddTraceContextHeader() Middleware {
 				header = make(http.Header)
 			}
 
-			trace.InjectTraceContext(ctx, header)
+			trace.InjectTraceContext(ctx, propagation.HeaderCarrier(header))
 
 			return rt.RoundTrip(req)
 		})
