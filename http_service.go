@@ -40,6 +40,10 @@ func (s *httpService) Handler(c *fiber.Ctx) error {
 
 	msg, err := s.caller.Call(ctx, msg)
 	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("failed to call callee service")
+
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
 		})

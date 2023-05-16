@@ -32,6 +32,20 @@ func (c canonicalMapCarrier) Keys() []string {
 	return propagation.MapCarrier(c).Keys()
 }
 
+type grpcHeaderCarrier propagation.HeaderCarrier
+
+func (c grpcHeaderCarrier) Get(key string) string {
+	return propagation.HeaderCarrier(c).Get(http.CanonicalHeaderKey(key))
+}
+
+func (c grpcHeaderCarrier) Set(key, value string) {
+	propagation.HeaderCarrier(c).Set(http.CanonicalHeaderKey(key), value)
+}
+
+func (c grpcHeaderCarrier) Keys() []string {
+	return propagation.HeaderCarrier(c).Keys()
+}
+
 func WithTraceContextFromMap(ctx context.Context, headers map[string]string) context.Context {
 	return traceContext.Extract(ctx, canonicalMapCarrier(headers))
 }
