@@ -50,7 +50,6 @@ func InjectBinaryTraceContext(ctx context.Context, carrier Carrier) {
 	sc := trace.SpanContextFromContext(ctx)
 	grpcTraceBin := BinaryFromSpanContext(sc)
 	carrier.Set(GrpcTraceBinHeader, string(grpcTraceBin))
-	InjectTraceContext(ctx, carrier)
 }
 
 func TraceContextFromContext(ctx context.Context) trace.SpanContext {

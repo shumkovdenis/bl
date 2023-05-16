@@ -70,3 +70,20 @@ func AddTraceContextHeader() Middleware {
 		})
 	}
 }
+
+func AddBinaryTraceContextHeader() Middleware {
+	return func(rt http.RoundTripper) http.RoundTripper {
+		return internalRoundTripper(func(req *http.Request) (*http.Response, error) {
+			ctx := req.Context()
+
+			header := req.Header
+			if header == nil {
+				header = make(http.Header)
+			}
+
+			trace.InjectBinaryTraceContext(ctx, header)
+
+			return rt.RoundTrip(req)
+		})
+	}
+}

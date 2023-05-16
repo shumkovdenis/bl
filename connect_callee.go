@@ -15,11 +15,19 @@ type connectCallee struct {
 }
 
 func NewConnectCallee(cfg Config) *connectCallee {
+	var interceptor connect.UnaryInterceptorFunc
+	if cfg.IsBinary() {
+		interceptor = connectUtils.AddBinaryTraceContextHeader()
+	} else {
+		interceptor = connectUtils.AddTraceContextHeader()
+	}
+
 	client := exampleConnect.NewIntegrationServiceClient(
 		connectUtils.NewInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connectUtils.WithClientOptions(
 			connectUtils.AddDaprAppIDHeader(cfg.Callee.ServiceName),
+			interceptor,
 		),
 	)
 	return &connectCallee{client: client}

@@ -38,7 +38,6 @@ func WithHandlerOptions(interceptors ...connect.Interceptor) connect.HandlerOpti
 func WithClientOptions(interceptors ...connect.Interceptor) connect.ClientOption {
 	return connect.WithClientOptions(
 		connect.WithGRPC(),
-		connect.WithInterceptors(AddTraceContextHeader()),
 		connect.WithInterceptors(interceptors...),
 	)
 }

@@ -2,7 +2,6 @@ package connect
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/bufbuild/connect-go"
@@ -85,7 +84,21 @@ func AddTraceContextHeader() connect.UnaryInterceptorFunc {
 			req connect.AnyRequest,
 		) (connect.AnyResponse, error) {
 			if req.Spec().IsClient {
-				log.Println(ctx)
+				trace.InjectTraceContext(ctx, req.Header())
+			}
+			return next(ctx, req)
+		})
+	}
+	return connect.UnaryInterceptorFunc(interceptor)
+}
+
+func AddBinaryTraceContextHeader() connect.UnaryInterceptorFunc {
+	interceptor := func(next connect.UnaryFunc) connect.UnaryFunc {
+		return connect.UnaryFunc(func(
+			ctx context.Context,
+			req connect.AnyRequest,
+		) (connect.AnyResponse, error) {
+			if req.Spec().IsClient {
 				carrier := ConnectHeaderCarrier(req.Header())
 				trace.InjectBinaryTraceContext(ctx, carrier)
 			}

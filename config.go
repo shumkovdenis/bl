@@ -24,7 +24,11 @@ type Config struct {
 	Callee      CalleeConfig `envPrefix:"CALLEE_"`
 }
 
-func (c *Config) Log() {
+func (c Config) IsBinary() bool {
+	return c.Mode != "http"
+}
+
+func (c Config) Log() {
 	log.Info().
 		Str("service name", c.ServiceName).
 		Str("mode", c.Mode).
