@@ -18,7 +18,9 @@ func NewConnectCallee(cfg Config) *connectCallee {
 	client := exampleConnect.NewIntegrationServiceClient(
 		connectUtils.NewInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
-		connectUtils.WithClientOptions(),
+		connectUtils.WithClientOptions(
+			connectUtils.AddDaprAppIDHeader(cfg.Callee.ServiceName),
+		),
 		// connect.WithGRPC(),
 		// connect.WithInterceptors(
 		// 	helpers.NewAppInterceptor("remote"),
