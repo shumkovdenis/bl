@@ -43,6 +43,11 @@ func (c connectCallee) Call(ctx context.Context, msg Message) (Message, error) {
 		return Message{}, err
 	}
 
+	connectErr, ok := extractCallError(err)
+	if ok {
+		return Message{}, fmt.Errorf("please retry with count=%d", connectErr.GetCount())
+	}
+
 	m := Message{Content: res.Msg.Content}
 
 	return m, nil

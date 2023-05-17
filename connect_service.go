@@ -52,7 +52,7 @@ func (s connectService) Call(
 			Err(err).
 			Msg("service failed to call")
 
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, newCallError(err)
 	}
 
 	res := connect.NewResponse(&example.CallResponse{

@@ -8,9 +8,9 @@ require (
 	github.com/gofiber/fiber/v2 v2.45.0
 	github.com/json-iterator/go v1.1.12
 	github.com/rs/zerolog v1.29.1
-	github.com/shumkovdenis/protobuf-schema v1.5.0
+	github.com/shumkovdenis/protobuf-schema v1.6.0
 	go.opentelemetry.io/otel/trace v1.15.1
-	golang.org/x/net v0.9.0
+	golang.org/x/net v0.10.0
 )
 
 require (
@@ -20,7 +20,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
-	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
