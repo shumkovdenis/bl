@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net"
 	"sync/atomic"
 
@@ -13,11 +12,10 @@ import (
 
 	pb "github.com/dapr/go-sdk/dapr/proto/runtime/v1"
 	"github.com/dapr/go-sdk/service/common"
+	"github.com/rs/zerolog/log"
 )
 
 func defaultHealthCheckHandler(ctx context.Context) error {
-	log.Println("health check handler not implemented")
-
 	return nil
 }
 
@@ -108,6 +106,8 @@ func (s *server) AddHealthCheckHandler(_ string, fn common.HealthCheckHandler) e
 
 // HealthCheck check app health status.
 func (s *server) HealthCheck(ctx context.Context, _ *emptypb.Empty) (*pb.HealthCheckResponse, error) {
+	log.Info().Msg("health check")
+
 	if s.healthCheckHandler != nil {
 		if err := s.healthCheckHandler(ctx); err != nil {
 			return &pb.HealthCheckResponse{}, err

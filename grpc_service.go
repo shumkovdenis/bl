@@ -44,6 +44,7 @@ func NewGRPCService(cfg Config, caller Callee) error {
 
 	// terminate your environment gracefully before leaving main function
 	defer func() {
+		log.Info().Msg("stopping server")
 		server.GracefulStop()
 	}()
 
