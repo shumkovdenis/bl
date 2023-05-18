@@ -35,7 +35,7 @@ func AddTraceContext() grpc.UnaryClientInterceptor {
 func AddBinaryTraceContext() grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{},
 		cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-		var carrier http.Header
+		carrier := make(http.Header)
 		trace.InjectBinaryTraceContext(ctx, carrier)
 		ctx = metadata.AppendToOutgoingContext(ctx,
 			trace.GrpcTraceBinHeader, carrier.Get(trace.GrpcTraceBinHeader))
