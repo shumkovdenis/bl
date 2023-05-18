@@ -21,7 +21,9 @@ spec:
         dapr.io/app-id: "service-b"
         dapr.io/app-protocol: "grpc"
         dapr.io/app-port: "7002"
-        dapr.io/config: "tracing"
+        dapr.io/config: "main"
+        dapr.io/enable-api-logging: "true"
+        dapr.io/enable-app-health-check: "true"
     spec:
       containers:
         - name: service-b
@@ -40,3 +42,10 @@ spec:
           ports:
             - containerPort: 7002
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 50m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi

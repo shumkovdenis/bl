@@ -37,9 +37,10 @@ spec:
         dapr.io/app-id: "gateway"
         dapr.io/app-protocol: "http"
         dapr.io/app-port: "7000"
-        dapr.io/enable-api-logging: "true"
-        dapr.io/config: "tracing"
+        dapr.io/config: "main"
         dapr.io/sidecar-listen-addresses: "0.0.0.0"
+        dapr.io/enable-api-logging: "true"
+        dapr.io/enable-app-health-check: "true"
     spec:
       containers:
         - name: gateway
@@ -58,3 +59,26 @@ spec:
           ports:
             - containerPort: 7000
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 50m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+          # livenessProbe:
+          #   httpGet:
+          #     path: v1.0/healthz
+          #     port: 3500
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          #   timeoutSeconds : 5
+          #   failureThreshold : 3
+          # readinessProbe:
+          #   httpGet:
+          #     path: v1.0/healthz
+          #     port: 3500
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          #   timeoutSeconds : 5
+          #   failureThreshold: 3

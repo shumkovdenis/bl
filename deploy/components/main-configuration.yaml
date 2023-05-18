@@ -1,7 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Configuration
 metadata:
-  name: tracing
+  name: main
   namespace: denis
 spec:
   tracing:
@@ -10,3 +10,6 @@ spec:
       endpointAddress: "tempo-distributor.tempo.svc.cluster.local:4317"
       isSecure: false
       protocol: grpc
+  features:
+  - name: AppHealthCheck
+    enabled: true
