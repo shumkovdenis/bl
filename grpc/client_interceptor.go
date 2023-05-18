@@ -24,7 +24,7 @@ func AddDaprAppID(appID string) grpc.UnaryClientInterceptor {
 func AddTraceContext() grpc.UnaryClientInterceptor {
 	return func(ctx context.Context, method string, req, reply interface{},
 		cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-		var carrier http.Header
+		carrier := make(http.Header)
 		trace.InjectTraceContext(ctx, carrier)
 		ctx = metadata.AppendToOutgoingContext(ctx,
 			trace.TraceparentHeader, carrier.Get(trace.TraceparentHeader))
