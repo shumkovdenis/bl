@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"sync/atomic"
 
@@ -15,6 +16,8 @@ import (
 )
 
 func defaultHealthCheckHandler(ctx context.Context) error {
+	log.Println("health check handler not implemented")
+
 	return nil
 }
 
