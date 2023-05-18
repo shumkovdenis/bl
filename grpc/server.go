@@ -14,6 +14,10 @@ import (
 	"github.com/dapr/go-sdk/service/common"
 )
 
+func defaultHealthCheckHandler(ctx context.Context) error {
+	return nil
+}
+
 // server is the gRPC service implementation for Dapr.
 type server struct {
 	pb.UnimplementedAppCallbackHealthCheckServer
@@ -25,7 +29,8 @@ type server struct {
 
 func newServer(lis net.Listener, opts ...grpc.ServerOption) *server {
 	s := &server{
-		listener: lis,
+		listener:           lis,
+		healthCheckHandler: defaultHealthCheckHandler,
 	}
 
 	gs := grpc.NewServer(opts...)
