@@ -48,7 +48,17 @@ func (s *grpcService) Call(ctx context.Context, req *pb.CallRequest) (*pb.CallRe
 			Err(err).
 			Msg("service failed to call")
 
-		return nil, status.Error(codes.Internal, err.Error())
+		st := status.New(codes.Internal, err.Error())
+
+		ds, err := st.WithDetails(&pb.RetryInfo{
+			Count:   1,
+			Timeout: 100,
+		})
+		if err != nil {
+			return nil, st.Err()
+		}
+
+		return nil, ds.Err()
 	}
 
 	res := &pb.CallResponse{

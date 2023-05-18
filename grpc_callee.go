@@ -8,6 +8,7 @@ import (
 	pb "github.com/shumkovdenis/protobuf-schema/gen/example/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 )
 
 type grpcCallee struct {
@@ -45,6 +46,14 @@ func (c grpcCallee) Call(ctx context.Context, msg Message) (Message, error) {
 
 	res, err := client.Call(ctx, req)
 	if err != nil {
+		s := status.Convert(err)
+		for _, d := range s.Details() {
+			switch info := d.(type) {
+			case *pb.RetryInfo:
+				return Message{}, fmt.Errorf("please retry with count=%d", info.GetCount())
+			}
+		}
+
 		return Message{}, fmt.Errorf("failed to call: %w", err)
 	}
 
