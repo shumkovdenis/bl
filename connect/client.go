@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/bufbuild/connect-go"
 	"golang.org/x/net/http2"
 )
 
@@ -23,21 +22,4 @@ func NewInsecureClient() *http.Client {
 			// Don't forget timeouts!
 		},
 	}
-}
-
-func WithHandlerOptions(interceptors ...connect.Interceptor) connect.HandlerOption {
-	return connect.WithHandlerOptions(
-		connect.WithInterceptors(
-			InjectTraceContext(),
-			InjectTraceContextLogger(),
-		),
-		connect.WithInterceptors(interceptors...),
-	)
-}
-
-func WithClientOptions(interceptors ...connect.Interceptor) connect.ClientOption {
-	return connect.WithClientOptions(
-		connect.WithGRPC(),
-		connect.WithInterceptors(interceptors...),
-	)
 }

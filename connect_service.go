@@ -15,16 +15,16 @@ import (
 )
 
 type connectService struct {
-	exampleConnect.UnimplementedIntegrationServiceHandler
+	exampleConnect.UnimplementedExampleServiceHandler
 	caller Callee
 }
 
 func NewConnectService(cfg Config, caller Callee) error {
-	s := connectService{caller: caller}
+	service := connectService{caller: caller}
 
 	mux := http.NewServeMux()
-	mux.Handle(exampleConnect.NewIntegrationServiceHandler(&s,
-		connectUtils.WithHandlerOptions(),
+	mux.Handle(exampleConnect.NewExampleServiceHandler(&service,
+		connectUtils.WithServerOptions(),
 	))
 
 	return http.ListenAndServe(

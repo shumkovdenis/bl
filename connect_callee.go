@@ -11,22 +11,22 @@ import (
 )
 
 type connectCallee struct {
-	client exampleConnect.IntegrationServiceClient
+	client exampleConnect.ExampleServiceClient
 }
 
 func NewConnectCallee(cfg Config) *connectCallee {
 	var interceptor connect.UnaryInterceptorFunc
 	if cfg.IsBinary() {
-		interceptor = connectUtils.AddBinaryTraceContextHeader()
+		interceptor = connectUtils.AddBinaryTraceContext()
 	} else {
-		interceptor = connectUtils.AddTraceContextHeader()
+		interceptor = connectUtils.AddTraceContext()
 	}
 
-	client := exampleConnect.NewIntegrationServiceClient(
+	client := exampleConnect.NewExampleServiceClient(
 		connectUtils.NewInsecureClient(),
 		fmt.Sprintf("http://localhost:%d", cfg.Dapr.GRPCPort),
 		connectUtils.WithClientOptions(
-			connectUtils.AddDaprAppIDHeader(cfg.Callee.ServiceName),
+			connectUtils.AddDaprAppID(cfg.Callee.ServiceName),
 			interceptor,
 		),
 	)

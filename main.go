@@ -19,6 +19,8 @@ func main() {
 		callee = NewConnectCallee(cfg)
 	} else if cfg.Callee.Mode == "error" {
 		callee = NewErrorCallee()
+	} else if cfg.Callee.Mode == "grpc" {
+		callee = NewGRPCCallee(cfg)
 	} else {
 		callee = NewFakeCallee()
 	}
@@ -30,6 +32,10 @@ func main() {
 	} else if cfg.Mode == "connect" {
 		if err := NewConnectService(cfg, callee); err != nil {
 			log.Fatal().Err(err).Msg("failed to start connect server")
+		}
+	} else if cfg.Mode == "grpc" {
+		if err := NewGRPCService(cfg, callee); err != nil {
+			log.Fatal().Err(err).Msg("failed to start grpc server")
 		}
 	} else {
 		log.Fatal().Msg("unknown mode")

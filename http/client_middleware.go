@@ -1,4 +1,4 @@
-package client
+package http
 
 import (
 	"net/http"
@@ -50,11 +50,11 @@ func AddHeader(key, value string) Middleware {
 	}
 }
 
-func AddDaprAppIDHeader(appID string) Middleware {
+func AddDaprAppID(appID string) Middleware {
 	return AddHeader("dapr-app-id", appID)
 }
 
-func AddTraceContextHeader() Middleware {
+func AddTraceContext() Middleware {
 	return func(rt http.RoundTripper) http.RoundTripper {
 		return internalRoundTripper(func(req *http.Request) (*http.Response, error) {
 			ctx := req.Context()
@@ -71,7 +71,7 @@ func AddTraceContextHeader() Middleware {
 	}
 }
 
-func AddBinaryTraceContextHeader() Middleware {
+func AddBinaryTraceContext() Middleware {
 	return func(rt http.RoundTripper) http.RoundTripper {
 		return internalRoundTripper(func(req *http.Request) (*http.Response, error) {
 			ctx := req.Context()

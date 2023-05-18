@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog/log"
 
-	"github.com/shumkovdenis/bl/http/server"
+	httpUtils "github.com/shumkovdenis/bl/http"
 )
 
 type httpService struct {
@@ -14,10 +14,10 @@ type httpService struct {
 }
 
 func NewHTTPService(cfg Config, caller Callee) error {
-	s := httpService{caller: caller}
+	service := httpService{caller: caller}
 
-	server := server.NewServer()
-	server.Post("/call", s.Handler)
+	server := httpUtils.NewServer()
+	server.Post("/call", service.Handler)
 
 	return server.Listen(fmt.Sprintf(":%d", cfg.Port))
 }

@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/shumkovdenis/bl/http/client"
+	httpUtils "github.com/shumkovdenis/bl/http"
 )
 
 type httpCallee struct {
@@ -19,15 +19,15 @@ type httpCallee struct {
 func NewHTTPCallee(cfg Config) *httpCallee {
 	url := fmt.Sprintf("http://localhost:%d/call", cfg.Dapr.HTTPPort)
 
-	var middleware client.Middleware
+	var middleware httpUtils.Middleware
 	if cfg.IsBinary() {
-		middleware = client.AddBinaryTraceContextHeader()
+		middleware = httpUtils.AddBinaryTraceContext()
 	} else {
-		middleware = client.AddTraceContextHeader()
+		middleware = httpUtils.AddTraceContext()
 	}
 
-	client := client.NewClient(
-		client.AddDaprAppIDHeader(cfg.Callee.ServiceName),
+	client := httpUtils.NewClient(
+		httpUtils.AddDaprAppID(cfg.Callee.ServiceName),
 		middleware,
 	)
 
