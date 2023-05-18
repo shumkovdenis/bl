@@ -9,6 +9,8 @@ import (
 	grpcUtils "github.com/shumkovdenis/bl/grpc"
 	pb "github.com/shumkovdenis/protobuf-schema/gen/example/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type grpcService struct {
@@ -46,7 +48,7 @@ func (s *grpcService) Call(ctx context.Context, req *pb.CallRequest) (*pb.CallRe
 			Err(err).
 			Msg("service failed to call")
 
-		return nil, err
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	res := &pb.CallResponse{
