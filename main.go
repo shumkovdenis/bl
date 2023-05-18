@@ -26,17 +26,13 @@ func main() {
 	}
 
 	if cfg.Mode == "http" {
-		if err := NewHTTPService(cfg, callee); err != nil {
-			log.Fatal().Err(err).Msg("failed to start http server")
-		}
+		RunHTTPService(cfg, callee)
 	} else if cfg.Mode == "connect" {
-		if err := NewConnectService(cfg, callee); err != nil {
+		if err := RunConnectService(cfg, callee); err != nil {
 			log.Fatal().Err(err).Msg("failed to start connect server")
 		}
 	} else if cfg.Mode == "grpc" {
-		if err := NewGRPCService(cfg, callee); err != nil {
-			log.Fatal().Err(err).Msg("failed to start grpc server")
-		}
+		RunGRPCService(cfg, callee)
 	} else {
 		log.Fatal().Msg("unknown mode")
 	}

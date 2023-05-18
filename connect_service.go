@@ -19,7 +19,7 @@ type connectService struct {
 	caller Callee
 }
 
-func NewConnectService(cfg Config, caller Callee) error {
+func RunConnectService(cfg Config, caller Callee) error {
 	service := connectService{caller: caller}
 
 	mux := http.NewServeMux()
