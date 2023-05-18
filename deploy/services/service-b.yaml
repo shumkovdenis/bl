@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+  namespace: denis
+  labels:
+    app: service-b
+    dapr.io/enabled: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+  template:
+    metadata:
+      labels:
+        app: service-b
+        dapr.io/enabled: "true"
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "service-b"
+        dapr.io/app-protocol: "grpc"
+        dapr.io/app-port: "7002"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+        - name: service-b
+          image: ghcr.io/shumkovdenis/bl:main
+          env:
+            - name: SERVICE_NAME
+              value: "service-b"
+            - name: MODE
+              value: "grpc"
+            - name: PORT
+              value: "7002"
+            - name: CALLEE_SERVICE_NAME
+              value: "service-c"
+            - name: CALLEE_MODE
+              value: "fake"
+          ports:
+            - containerPort: 7002
+          imagePullPolicy: Always

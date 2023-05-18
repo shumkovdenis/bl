@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: gateway
+  namespace: denis
   labels:
     app: gateway
 spec:
@@ -41,25 +42,19 @@ spec:
         dapr.io/sidecar-listen-addresses: "0.0.0.0"
     spec:
       containers:
-      - name: gateway
-        image: ghcr.io/shumkovdenis/bl-gateway:main
-        env:
-        - name: PORT
-          value: "6000"
-        - name: INTEGRATION_APP_ID
-          value: "integration-grpc"
-        - name: HTTP_TRACE_TRACE_PARENT
-          value: "true"
-        - name: HTTP_TRACE_TRACE_STATE
-          value: "false"
-        - name: HTTP_TRACE_GRPC_TRACE_BIN
-          value: "false"
-        - name: GRPC_TRACE_TRACE_PARENT
-          value: "false"
-        - name: GRPC_TRACE_TRACE_STATE
-          value: "false"
-        - name: GRPC_TRACE_GRPC_TRACE_BIN
-          value: "true"
-        ports:
-        - containerPort: 6000
-        imagePullPolicy: Always
+        - name: gateway
+          image: ghcr.io/shumkovdenis/bl:main
+          env:
+            - name: SERVICE_NAME
+              value: "gateway"
+            - name: MODE
+              value: "http"
+            - name: PORT
+              value: "6000"
+            - name: CALLEE_SERVICE_NAME
+              value: "service-a"
+            - name: CALLEE_MODE
+              value: "grpc"
+          ports:
+            - containerPort: 6000
+          imagePullPolicy: Always

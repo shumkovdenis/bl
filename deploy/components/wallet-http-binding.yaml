@@ -2,6 +2,7 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: wallet
+  namespace: denis
 spec:
   type: bindings.http
   version: v1
