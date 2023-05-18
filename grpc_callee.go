@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	grpcUtils "github.com/shumkovdenis/bl/grpc"
 	pb "github.com/shumkovdenis/protobuf-schema/gen/example/v1"
@@ -36,7 +35,7 @@ func (c grpcCallee) Call(ctx context.Context, msg Message) (Message, error) {
 		),
 	)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		return Message{}, fmt.Errorf("did not connect: %w", err)
 	}
 	defer conn.Close()
 
@@ -46,7 +45,7 @@ func (c grpcCallee) Call(ctx context.Context, msg Message) (Message, error) {
 
 	res, err := client.Call(ctx, req)
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		return Message{}, fmt.Errorf("failed to call: %w", err)
 	}
 
 	m := Message{Content: res.Content}
