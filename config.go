@@ -22,10 +22,7 @@ type Config struct {
 	Mode        string       `env:"MODE" envDefault:"http"`
 	Port        int          `env:"PORT" envDefault:"6000"`
 	Callee      CalleeConfig `envPrefix:"CALLEE_"`
-}
-
-func (c Config) IsBinary() bool {
-	return c.Mode != "http"
+	IsBinary    bool         `env:"IS_BINARY" envDefault:"false"`
 }
 
 func (c Config) Log() {

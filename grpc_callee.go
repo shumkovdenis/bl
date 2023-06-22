@@ -21,7 +21,7 @@ func NewGRPCCallee(cfg Config) *grpcCallee {
 
 func (c grpcCallee) Call(ctx context.Context, msg Message) (Message, error) {
 	var interceptor grpc.UnaryClientInterceptor
-	if c.cfg.IsBinary() {
+	if c.cfg.IsBinary {
 		interceptor = grpcUtils.AddBinaryTraceContext()
 	} else {
 		interceptor = grpcUtils.AddTraceContext()

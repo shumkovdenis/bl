@@ -20,7 +20,7 @@ func NewHTTPCallee(cfg Config) *httpCallee {
 	url := fmt.Sprintf("http://localhost:%d/call", cfg.Dapr.HTTPPort)
 
 	var middleware httpUtils.Middleware
-	if cfg.IsBinary() {
+	if cfg.IsBinary {
 		middleware = httpUtils.AddBinaryTraceContext()
 	} else {
 		middleware = httpUtils.AddTraceContext()
