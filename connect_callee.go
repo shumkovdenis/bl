@@ -16,7 +16,7 @@ type connectCallee struct {
 
 func NewConnectCallee(cfg Config) *connectCallee {
 	var interceptor connect.UnaryInterceptorFunc
-	if cfg.IsBinary() {
+	if cfg.IsBinary {
 		interceptor = connectUtils.AddBinaryTraceContext()
 	} else {
 		interceptor = connectUtils.AddTraceContext()
